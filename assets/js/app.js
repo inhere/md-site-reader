@@ -45,6 +45,7 @@ const CACHE_KEY_PREFIX = config.siteName + ':'
 const loading = $('#loading-layer')
 const request = getUrlRequest()
 const titleEl = $('head>title')
+const sidebar = $('#sidebar')
 const md = window.markdownit({
     highlight: function (str, lang) {
       if (lang && hljs.getLanguage(lang)) {
@@ -60,7 +61,7 @@ const md = window.markdownit({
 prepareInit()
 
 $(function () { // init logic
-  someUICheck()
+  init()
   fetchDocCatelog()
   showPageContent(request.p ? request.p : config.defaultPage);
 })
@@ -91,12 +92,13 @@ function prepareInit() {
   // add some info to page
   $('#top-logo').html(config.siteName)
   $('.project-url').attr('href', config.projectUrl)
+  $('.doc-url').attr('href', config.docUrl)
   $('.issue-url').attr('href', config.issueUrl)
   $('.author-page').attr('href', config.authorPage)
   $('.author-name').text(config.authorName)
 }
 
-function someUICheck() {
+function init() {
   $('#sidebar-box').css({'top': config.navHeight + 'px'})
   $('#content-box').css({'top': config.navHeight + 'px'})
 
@@ -127,32 +129,36 @@ function someUICheck() {
 
     showPageContent(pageUrl, null, true)
   })
+
+  $('#search-input').on('keyup', catelogSearch)
 }
 
 function fetchDocCatelog() {
   $.get(config.dataUrl + config.catelogPage, function (res) {
     // console.log(res);
 
-    let sidebar = $('#sidebar')
+    // let sidebar = $('#sidebar')
     let html = md.render(res)
 
     sidebar.html(html ? html : 'No catelog data')
-    sidebar.find('a').on('click', function (e) {
-      e.preventDefault() // 默认事件
-      e.stopPropagation() // 事件冒泡
-      let href = $(this).attr('href')
-      let title = $(this).text()
-
-      sidebar.find('a').removeClass('active')
-      $(this).addClass('active')
-
-      // 改变地址栏URL
-      window.history.pushState({name: title}, "", request.p)
-      window.history.replaceState({name: title}, "", config.basePath + '?p=' + href)
-
-      showPageContent(href, title)
-    })
+    sidebar.find('a').on('click', catelogLinksHandler)
   }, 'text');
+}
+
+function catelogLinksHandler(e) {
+  e.preventDefault() // 默认事件
+  e.stopPropagation() // 事件冒泡
+  let href = $(this).attr('href')
+  let title = $(this).text()
+
+  sidebar.find('a').removeClass('active')
+  $(this).addClass('active')
+
+  // 改变地址栏URL
+  window.history.pushState({name: title}, "", request.p)
+  window.history.replaceState({name: title}, "", config.basePath + '?p=' + href)
+
+  showPageContent(href, title)
 }
 
 function showPageContent(pageUrl, title, refresh) {
@@ -177,7 +183,7 @@ function showPageContent(pageUrl, title, refresh) {
 
     // has image tag
     if (html.indexOf('<img src="') > 0) {
-      html = html.replace(/<img [^>]*src=['"]([^'"]+)[^>]*>/gi, '<img src="' + config.dataUrl + '$1">')
+      html = html.replace(/<img [^>]*src=['"]([^'"]+)[^>]*>/gi, '<img class="img-responsive" src="' + config.dataUrl + '$1">')
     }
 
     content.attr('data-url', pageUrl).html(html)
@@ -189,6 +195,8 @@ function showPageContent(pageUrl, title, refresh) {
     if (!title) {
       title = content.find('h1').first().text()
     }
+
+    content.find('a').on('click', catelogLinksHandler)
 
     $('#doc-url').text(decodeURI(pageUrl))
     // show title
@@ -216,6 +224,16 @@ function showPageContent(pageUrl, title, refresh) {
   } else {
     successHandler(storage.get(cacheKey))
   }
+}
+
+function catelogSearch(e) {
+  let kw = $(this).val().trim()
+  sidebar.find('a').each(function(i, el) {
+    let href = $(el).attr('href')
+    let text = $(el).text()
+
+    console.log(i, el)
+  })
 }
 
 function createContentTOC(contentBox) {
