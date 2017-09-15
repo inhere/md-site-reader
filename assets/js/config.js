@@ -10,8 +10,8 @@ config.docUrl = 'https://github.com/astaxie/build-web-application-with-golang'
   // e.g https://github.com/astaxie/build-web-application-with-golang/edit/master/http.md
 config.editUrl = 'https://github.com/astaxie/build-web-application-with-golang/edit/master'
 
-config.project = 'astaxie/build-web-application-with-golang'
-config.projectUrl = 'https://github.com/astaxie/build-web-application-with-golang'
+config.project = 'inhere/md-site-reader'
+config.projectUrl = 'https://github.com/inhere/md-site-reader'
 config.issueUrl = 'https://github.com/astaxie/build-web-application-with-golang/issues'
 
 config.authorPage = 'https://github.com/astaxie'
