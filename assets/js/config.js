@@ -1,7 +1,8 @@
   // page title = baseTile + content title
 config.baseTitle = 'Go Web 编程'
-config.siteName = 'go-web-dev'
-config.basePath = location.pathname
+config.siteName = 'Go Web 编程'
+config.siteKey = 'go-web-dev'
+// config.basePath = location.pathname
 
 config.docProject = 'astaxie/build-web-application-with-golang'
   // e.g https://raw.githubusercontent.com/{astaxie/build-web-application-with-golang}/master/{beanfactory.md}

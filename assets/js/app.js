@@ -38,9 +38,9 @@ const storage = {
   }
 }
 
-const CACHE_KEY_THEME = config.siteName + '_theme'
-// const CACHE_KEY_CODE_THEME = config.siteName + '_code_theme'
-const CACHE_KEY_PREFIX = config.siteName + ':'
+const CACHE_KEY_THEME = config.siteKey + '_theme'
+// const CACHE_KEY_CODE_THEME = config.siteKey + '_code_theme'
+const CACHE_PREFIX_CONTENT = config.siteKey + ':'
 
 const loading = $('#loading-layer')
 const request = getUrlRequest()
@@ -59,6 +59,10 @@ const md = window.markdownit({
 })
 
 prepareInit()
+
+window.onpopstate = function(event) {
+    console.log("location: " + document.location + ", state: " + JSON.stringify(event.state));
+}
 
 $(function () { // init logic
   init()
@@ -154,9 +158,11 @@ function catelogLinksHandler(e) {
   sidebar.find('a').removeClass('active')
   $(this).addClass('active')
 
+  // 将地址栏URL加入历史
+  window.history.pushState({name: title}, "", location.pathname + '?p=' + request.p)
   // 改变地址栏URL
-  window.history.pushState({name: title}, "", request.p)
-  window.history.replaceState({name: title}, "", config.basePath + '?p=' + href)
+  // window.history.replaceState({name: title}, "", config.basePath + '?p=' + href)
+  window.history.replaceState({name: title}, "", location.pathname + '?p=' + href)
 
   showPageContent(href, title)
 }
@@ -167,7 +173,7 @@ function showPageContent(pageUrl, title, refresh) {
 
   loading.toggle()
 
-  let cacheKey = CACHE_KEY_PREFIX + pageUrl
+  let cacheKey = CACHE_PREFIX_CONTENT + pageUrl
   let successHandler = function (res) {
     // console.log(res);
     let content = $('#content')
@@ -228,11 +234,29 @@ function showPageContent(pageUrl, title, refresh) {
 
 function catelogSearch(e) {
   let kw = $(this).val().trim()
-  sidebar.find('a').each(function(i, el) {
-    let href = $(el).attr('href')
-    let text = $(el).text()
 
-    console.log(i, el)
+
+  if (!kw) {
+    sidebar.find('li').removeClass('hide')
+    return
+  }
+
+  kw = kw.toLowerCase()
+  sidebar.find('a').each(function(i, el) {
+    let elDom = $(el)
+    let href = elDom.attr('href').toLowerCase()
+    let text = elDom.text().toLowerCase()
+
+    console.log(kw, href, text)
+
+    let hasSubLi = elDom.next('ul').length > 0
+
+    elDom.parent('li').removeClass('hide')
+
+    // not match
+    if (text.indexOf(kw) < 0 && href.indexOf(kw) < 0 && !hasSubLi) {
+      elDom.parent('li').addClass('hide')
+    }
   })
 }
 
@@ -250,13 +274,13 @@ function createContentTOC(contentBox) {
     var tag = $(item).get(0).localName;
 
     $(item).attr("id","wow_"+i);
-    tocList.append('<a class="toc-'+tag+'" href="#wow_'+i+'">'+$(this).text()+'</a></br>');
-    tocList.find(".toc-h2").css("margin-left",0);
-    tocList.find(".toc-h3").css("margin-left",15);
-    tocList.find(".toc-h4").css("margin-left",30);
-    tocList.find(".toc-h5").css("margin-left",45);
-    tocList.find(".toc-h6").css("margin-left",60);
-  });
+    tocList.append('<a class="toc-'+tag+'" data-tag="' + tag + '" href="#wow_'+i+'">'+$(this).text()+'</a></br>')
+    tocList.find(".toc-h2").css("margin-left",0)
+    tocList.find(".toc-h3").css("margin-left",15)
+    tocList.find(".toc-h4").css("margin-left",30)
+    tocList.find(".toc-h5").css("margin-left",45)
+    tocList.find(".toc-h6").css("margin-left",60)
+  })
 
   tocBox.show()
 }
