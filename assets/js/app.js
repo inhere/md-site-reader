@@ -175,6 +175,11 @@ function showPageContent(pageUrl, title, refresh) {
       html = '<h2 class="text-muted">' + config.emptyData + '</h2>'
     }
 
+    // has image tag
+    if (html.indexOf('<img src="') > 0) {
+      html = html.replace(/<img [^>]*src=['"]([^'"]+)[^>]*>/gi, '<img src="' + config.dataUrl + '$1">')
+    }
+
     content.attr('data-url', pageUrl).html(html)
 
     if (config.makeTOC) {

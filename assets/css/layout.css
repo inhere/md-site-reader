@@ -152,6 +152,7 @@ body {
   min-width: 120px;
   max-width: 200px;
   max-height: 400px;
+  overflow-y: auto;
   background-color: #fff;
 
   padding: 5px;

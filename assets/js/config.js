@@ -1,47 +1,25 @@
-
-const config = {
   // page title = baseTile + content title
-  baseTitle: 'Swoft Doc',
-  siteName: 'Swoft',
-  basePath: location.pathname,
+config.baseTitle = 'Go Web 编程'
+config.siteName = 'go-web-dev'
+config.basePath = location.pathname
 
-  docProject: 'swoft-cloud/swoft-doc',
-  // e.g https://raw.githubusercontent.com/{swoft-cloud/swoft-doc}/master/{beanfactory.md}
-  dataUrl: 'https://raw.githubusercontent.com/swoft-cloud/swoft-doc/master/',
-  docUrl: 'https://github.com/swoft-cloud/swoft-doc',
-  // e.g https://github.com/swoft-cloud/swoft-doc/edit/master/http.md
-  editUrl: 'https://github.com/swoft-cloud/swoft-doc/edit/master',
+config.docProject = 'astaxie/build-web-application-with-golang'
+  // e.g https://raw.githubusercontent.com/{astaxie/build-web-application-with-golang}/master/{beanfactory.md}
+config.dataUrl = 'https://raw.githubusercontent.com/astaxie/build-web-application-with-golang/master/zh/'
+config.docUrl = 'https://github.com/astaxie/build-web-application-with-golang'
+  // e.g https://github.com/astaxie/build-web-application-with-golang/edit/master/http.md
+config.editUrl = 'https://github.com/astaxie/build-web-application-with-golang/edit/master'
 
-  project: 'swoft-cloud/swoft',
-  projectUrl: 'https://github.com/swoft-cloud/swoft',
-  issueUrl: 'https://github.com/swoft-cloud/swoft/issues',
+config.project = 'astaxie/build-web-application-with-golang'
+config.projectUrl = 'https://github.com/astaxie/build-web-application-with-golang'
+config.issueUrl = 'https://github.com/astaxie/build-web-application-with-golang/issues'
 
-  authorPage: 'https://github.com/stelin',
-  authorName: 'stelin',
+config.authorPage = 'https://github.com/astaxie'
+config.authorName = 'astaxie'
 
-  theme: 'paper',
-  codeTheme: 'github',
-  catelogPage: 'SUMMARY.md',
-  defaultPage: 'README.md',
-  makeTOC: true,
-  emptyData: 'No content to display!'
-}
-
-const themes = {
-  cerulean: 51,
-  cyborg: 51,
-  flatly: 61,
-  journal: 61,
-  readable: 66,
-  simplex: 41,
-  spacelab: 51,
-  united: 51,
-  cosmo: 51,
-  // darkly: 61,
-  lumen: 51,
-  paper: 66,
-  sandstone: 63,
-  slate: 52,
-  superhero: 40,
-  yeti: 45
-}
+config.theme = 'paper'
+config.codeTheme = 'github'
+config.catelogPage = 'SUMMARY.md'
+config.defaultPage = 'README.md'
+config.makeTOC = true
+config.emptyData = 'No content to display!'
