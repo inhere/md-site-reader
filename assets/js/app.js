@@ -37,6 +37,8 @@ const storage = {
     }
   }
 }
+
+const loading = $('#loading-layer')
 const request = getUrlRequest()
 const titleEl = $('head>title')
 const md = window.markdownit({
@@ -153,8 +155,9 @@ function showPageContent(pageUrl, title, refresh) {
   refresh = refresh === undefined ? false : refresh
   $('#edit-btn').attr('href', config.editUrl + '/' + pageUrl)
 
-  let key = config.siteName + pageUrl
+  loading.toggle()
 
+  let key = config.siteName + pageUrl
   let successHandler = function (res) {
     // console.log(res);
     let content = $('#content')
@@ -178,9 +181,11 @@ function showPageContent(pageUrl, title, refresh) {
       title = content.find('h1').first().text()
     }
 
-    $('#doc-url').text(pageUrl)
+    $('#doc-url').text(decodeURI(pageUrl))
     // show title
     titleEl.text(config.baseTitle + ' - ' + title)
+
+    loading.toggle()
   }
 
   if (refresh || !storage.has(key)) {
@@ -195,6 +200,8 @@ function showPageContent(pageUrl, title, refresh) {
         } else {
           alert("错误提示： " + xhr.status + " " + xhr.statusText);
         }
+
+        loading.toggle()
       }
     })
   } else {
