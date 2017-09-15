@@ -189,7 +189,9 @@ body {
   max-width: 1200px;
   min-width: 350px; */
 }
+
 #content {
+  min-height: 350px;
   padding-bottom: 15px;
 }
 

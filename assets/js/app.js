@@ -38,6 +38,10 @@ const storage = {
   }
 }
 
+const CACHE_KEY_THEME = config.siteName + '_theme'
+// const CACHE_KEY_CODE_THEME = config.siteName + '_code_theme'
+const CACHE_KEY_PREFIX = config.siteName + ':'
+
 const loading = $('#loading-layer')
 const request = getUrlRequest()
 const titleEl = $('head>title')
@@ -57,7 +61,7 @@ prepareInit()
 
 $(function () { // init logic
   someUICheck()
-  getDocIndex()
+  fetchDocCatelog()
   showPageContent(request.p ? request.p : config.defaultPage);
 })
 
@@ -67,8 +71,7 @@ function prepareInit() {
     $('body').removeClass('with-sidebar')
   }
 
-  // href="assets/lib/bootswatch/{theme:paper}/bootstrap.min.css"
-  let theme = storage.get('swoft-doc-theme')
+  let theme = storage.get(CACHE_KEY_THEME)
   theme = theme ? theme : config.theme
 
   if (themes[theme]) {
@@ -83,6 +86,7 @@ function prepareInit() {
 
   // load theme css
   $('#bts-style-link').attr('date-theme', theme).attr('href', 'assets/lib/bootswatch/' + theme + '/bootstrap.min.css')
+  $('#code-style-link').attr('date-theme', config.codeTheme).attr('href', 'assets/lib/highlight/styles/' + config.codeTheme + '.css')
 
   // add some info to page
   $('#top-logo').html(config.siteName)
@@ -110,7 +114,7 @@ function someUICheck() {
   // bind some events
   $('#theme-list').on('change', function () {
     let newTheme = $(this).val()
-    storage.set(config.siteName + '-theme', newTheme)
+    storage.set(CACHE_KEY_THEME, newTheme)
     window.location.reload()
   })
 
@@ -125,7 +129,7 @@ function someUICheck() {
   })
 }
 
-function getDocIndex() {
+function fetchDocCatelog() {
   $.get(config.dataUrl + config.catelogPage, function (res) {
     // console.log(res);
 
@@ -157,7 +161,7 @@ function showPageContent(pageUrl, title, refresh) {
 
   loading.toggle()
 
-  let key = config.siteName + pageUrl
+  let cacheKey = CACHE_KEY_PREFIX + pageUrl
   let successHandler = function (res) {
     // console.log(res);
     let content = $('#content')
@@ -165,10 +169,10 @@ function showPageContent(pageUrl, title, refresh) {
 
     if (res) {
       // add cache
-      storage.set(key, res)
+      storage.set(cacheKey, res)
       html = md.render(res)
     } else {
-      html = '<h2>' + config.emptyData + '</h2>'
+      html = '<h2 class="text-muted">' + config.emptyData + '</h2>'
     }
 
     content.attr('data-url', pageUrl).html(html)
@@ -188,7 +192,7 @@ function showPageContent(pageUrl, title, refresh) {
     loading.toggle()
   }
 
-  if (refresh || !storage.has(key)) {
+  if (refresh || !storage.has(cacheKey)) {
     $.ajax({
       url: config.dataUrl + pageUrl,
       type: 'GET',
@@ -196,16 +200,16 @@ function showPageContent(pageUrl, title, refresh) {
       success: successHandler,
       error: function(xhr){
         if (xhr.status === 404) {
-            $('#content').html('<h2>文档 "<em>' + title + '</em> " 正在完善中... ...</h2>')
+            $('#content').html('<h2 class="text-muted">' + config.emptyData + '</h2>')
         } else {
-          alert("错误提示： " + xhr.status + " " + xhr.statusText);
+          alert("ERROR: (" + xhr.status + ") " + xhr.statusText);
         }
 
         loading.toggle()
       }
     })
   } else {
-    successHandler(storage.get(key))
+    successHandler(storage.get(cacheKey))
   }
 }
 
