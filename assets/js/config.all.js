@@ -22,12 +22,15 @@ const config = {
   authorPage: 'https://github.com/stelin',
   authorName: 'stelin',
 
-  theme: 'paper',
-  codeTheme: 'github',
+  emptyData: 'No content to display!',
   catelogPage: 'SUMMARY.md',
   defaultPage: 'README.md',
+
+  theme: 'paper',
+  codeTheme: 'github',
   makeTOC: true,
-  emptyData: 'No content to display!'
+  /* £ $ & β ξ ψ ℘ § */
+  anchorIcon: '℘',
 }
 
 const themes = {

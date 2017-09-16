@@ -218,18 +218,22 @@ body {
   max-width: 200px;
   max-height: 400px;
   overflow-y: auto;
-  background-color: #fff;
 
-  padding: 5px;
-  border: 1px solid #ddd;
+  background-color: #f4f4f4;
+  border: 1px solid #cdcdcd;
   box-shadow: 0 0 3px #dedede;
 }
 
 #content-toc-box .title{
   font-weight: bold;
+  position: sticky;
+  top: 0;
+  padding: 5px;
+  color: #666;
+  background-color: #dedede;
 }
 #content-toc {
-  padding: 6px;
+  padding: 5px 5px 10px;
 }
 
 #content {
@@ -274,15 +278,29 @@ body {
 }
 
 @media (min-width: 992px) {
-
-  #loading-layer .loading {
+  #loading-layer div.loading {
     margin-top: 30%;
   }
 }
 
 @media (min-width: 1199px) {
-
-  #loading-layer .loading {
+  #loading-layer div.loading {
     margin-top: 20%;
   }
+}
+
+.anchor-link {
+  line-height: 2rem;
+  font-style: italic;
+  opacity: 0;
+  -webkit-font-smoothing: antialiased;
+  text-decoration: none;
+}
+
+.anchor-link:hover, .anchor-link:focus {
+  text-decoration: none;
+}
+
+[data-anchor-icon]::after {
+    content: attr(data-anchor-icon);
 }

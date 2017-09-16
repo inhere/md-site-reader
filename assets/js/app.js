@@ -222,6 +222,11 @@ function showPageContent(pageUrl, title, refresh) {
     content.find('a').each(function() {
       let href = $(this).attr('href')
 
+      // empyt OR is a anchor
+      if (!href || href[0] === '#') {
+        return
+      }
+
       // outside link
       if (href.search(/^http[s]/) > -1) {
         $(this).attr('target', '_blank')
@@ -318,17 +323,28 @@ function createContentTOC(contentBox) {
     tocBox.hide()
     return
   }
+
+  let haStyle = {
+    opacity: 1,
+    position: 'absolute',
+    marginLeft: '-1em',
+    paddingRight: '0.5em',
+  }
+
   tocList.html('')
   hList.each(function(i,item){
-    var tag = $(item).get(0).localName;
+    let hTag = $(item), title = hTag.text()
+    let tag = hTag.get(0).localName
+    let id = 'md-title-item' + i
+    let mgLeft = (tag[1] - 2) * 15
+    /* £ $ & β ξ ψ ℘ § */
+    let ha = $('<a class="anchor-link" data-anchor-icon="' + config.anchorIcon + '"></a>')
+    let a = $('<a data-tag="' + tag + '" href="#'+id+'">'+hTag.text()+'</a>')
 
-    $(item).attr("id","wow_"+i);
-    tocList.append('<a class="toc-'+tag+'" data-tag="' + tag + '" href="#wow_'+i+'">'+$(this).text()+'</a></br>')
-    tocList.find(".toc-h2").css("margin-left",0)
-    tocList.find(".toc-h3").css("margin-left",15)
-    tocList.find(".toc-h4").css("margin-left",30)
-    tocList.find(".toc-h5").css("margin-left",45)
-    tocList.find(".toc-h6").css("margin-left",60)
+    ha.attr('href', '#' + id).css(haStyle)
+    hTag.attr('id', id).addClass('content-htag').prepend(ha)
+    a.attr('title', title).addClass('toc-'+tag).css({marginLeft: mgLeft, display: 'block'})
+    tocList.append(a)
   })
 
   tocBox.show()
