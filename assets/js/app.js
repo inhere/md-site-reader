@@ -97,6 +97,8 @@ function prepareInit() {
 
   // add some info to page
   $('#top-logo').attr('href', config.logoUrl).html(config.siteName)
+  $('.site-des').text(config.siteDes)
+  $('.site-name').text(config.siteName)
   $('.project-url').attr('href', config.projectUrl)
   $('.doc-url').attr('href', config.docUrl)
   $('.issue-url').attr('href', config.issueUrl)
@@ -217,7 +219,18 @@ function showPageContent(pageUrl, title, refresh) {
       title = content.find('h1').first().text()
     }
 
-    content.find('a').on('click', catelogLinksHandler)
+    content.find('a').each(function() {
+      let href = $(this).attr('href')
+
+      // outside link
+      if (href.search(/^http[s]/) > -1) {
+        $(this).attr('target', '_blank')
+
+        // inside link
+      } else {
+        $(this).on('click', catelogLinksHandler)
+      }
+    })
 
     $('#content-box').scrollTop(0)
     $('#doc-url').text(decodeURI(pageUrl))
@@ -273,8 +286,6 @@ function catelogSearch(kw) {
     if (isParent) {
       showSubLiNum = subLi.find(':not(.hide)').length
     }
-
-    // elDom.parents('li').removeClass('hide')
 
     // not match
     if (text.indexOf(kw) < 0 && href.indexOf(kw) < 0) {

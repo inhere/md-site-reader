@@ -2,6 +2,7 @@
 const config = {
   siteKey: 'swoft',
   siteName: 'Swoft',
+  siteDes: 'the description text',
   // page title = baseTile + content title
   baseTitle: 'Swoft Doc',
   // basePath: ,
