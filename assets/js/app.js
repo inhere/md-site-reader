@@ -66,7 +66,7 @@ window.onpopstate = function(event) {
 
 $(function () { // init logic
   init()
-  fetchDocCatelog()
+  showDocCatelog()
   showPageContent(request.p ? request.p : config.defaultPage);
 })
 
@@ -134,18 +134,31 @@ function init() {
     showPageContent(pageUrl, null, true)
   })
 
-  $('#search-input').on('keyup', catelogSearch)
+  $('#search-input').on('keyup', function(e) {
+    catelogSearch($(this).val())
+  })
+
+  $('#clear-search-input').on('click', function(e) {
+    let kw = $('#search-input').val()
+
+    if (kw) {
+      $('#search-input').val('')
+
+      catelogSearch('')
+    }
+  })
 }
 
-function fetchDocCatelog() {
+function showDocCatelog() {
   $.get(config.dataUrl + config.catelogPage, function (res) {
     // console.log(res);
 
     // let sidebar = $('#sidebar')
     let html = md.render(res)
+    let icon = '<i class="fa fa-check search-matched hide" style="font-weight: 200;"></i>'
 
     sidebar.html(html ? html : 'No catelog data')
-    sidebar.find('a').on('click', catelogLinksHandler)
+    sidebar.find('a').append(icon).on('click', catelogLinksHandler)
   }, 'text');
 }
 
@@ -204,6 +217,7 @@ function showPageContent(pageUrl, title, refresh) {
 
     content.find('a').on('click', catelogLinksHandler)
 
+    $('#content-box').scrollTop(0)
     $('#doc-url').text(decodeURI(pageUrl))
     // show title
     titleEl.text(config.baseTitle + ' - ' + title)
@@ -232,12 +246,12 @@ function showPageContent(pageUrl, title, refresh) {
   }
 }
 
-function catelogSearch(e) {
-  let kw = $(this).val().trim()
-
+function catelogSearch(kw) {
+  kw = kw.trim()
+  sidebar.find('li').removeClass('hide')
+  sidebar.find('i').addClass('hide')
 
   if (!kw) {
-    sidebar.find('li').removeClass('hide')
     return
   }
 
@@ -249,21 +263,43 @@ function catelogSearch(e) {
 
     console.log(kw, href, text)
 
-    let hasSubLi = elDom.next('ul').length > 0
+    // is parent li subLi > 0
+    let subLi = elDom.next('ul').find('li')
+    let isParent = subLi.length > 0
+    let showSubLiNum = 0
 
-    elDom.parent('li').removeClass('hide')
+    if (isParent) {
+      showSubLiNum = subLi.find(':not(.hide)').length
+    }
+
+    // elDom.parents('li').removeClass('hide')
 
     // not match
-    if (text.indexOf(kw) < 0 && href.indexOf(kw) < 0 && !hasSubLi) {
-      elDom.parent('li').addClass('hide')
+    if (text.indexOf(kw) < 0 && href.indexOf(kw) < 0) {
+      if (isParent && showSubLiNum === 0) {
+        elDom.parent('li').addClass('hide')
+
+        // is last sub li
+      } else if (!isParent && showSubLiNum === 1) {
+        elDom.parents('li').addClass('hide')
+      } else {
+        elDom.parent('li').addClass('hide')
+      }
+    } else {
+      // open icon
+      elDom.find('i').removeClass('hide')
+
+      if (!isParent) {
+        elDom.parents('li').removeClass('hide')
+      }
     }
   })
 }
 
 function createContentTOC(contentBox) {
-  let tocList = $("#content-toc"),
-      tocBox = $('#content-toc-box'),
-      hList = contentBox.find("h2,h3,h4,h5,h6")
+  let tocBox = $('#content-toc-box'),
+    tocList = $("#content-toc"),
+    hList = contentBox.find("h2,h3,h4,h5,h6")
 
   if (!hList[0]) {
     tocBox.hide()

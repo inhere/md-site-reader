@@ -2,13 +2,12 @@
 config.baseTitle = 'Go Web 编程'
 config.siteName = 'Go Web 编程'
 config.siteKey = 'go-web-dev'
-// config.basePath = location.pathname
 
 config.docProject = 'astaxie/build-web-application-with-golang'
-  // e.g https://raw.githubusercontent.com/{astaxie/build-web-application-with-golang}/master/{beanfactory.md}
+//   // e.g https://raw.githubusercontent.com/{astaxie/build-web-application-with-golang}/master/{beanfactory.md}
 config.dataUrl = 'https://raw.githubusercontent.com/astaxie/build-web-application-with-golang/master/zh/'
 config.docUrl = 'https://github.com/astaxie/build-web-application-with-golang'
-  // e.g https://github.com/astaxie/build-web-application-with-golang/edit/master/http.md
+//   // e.g https://github.com/astaxie/build-web-application-with-golang/edit/master/http.md
 config.editUrl = 'https://github.com/astaxie/build-web-application-with-golang/edit/master'
 
 config.project = 'inhere/md-site-reader'

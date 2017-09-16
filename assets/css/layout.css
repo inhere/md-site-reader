@@ -69,8 +69,15 @@ body {
 }
 
 #search-box {
+  position: sticky;
+  top: 0;
+  background-color: rgba(245, 245, 245, 0.9);
   padding: 15px 15px 0;
   border-bottom: 1px solid #bbb;
+}
+
+#clear-search-input {
+  pointer-events: initial;
 }
 
 .with-sidebar #sidebar-box{
@@ -109,7 +116,7 @@ body {
 }
 
 #sidebar {
-    padding: 5px 10px 10px;
+    padding: 10px;
     border-bottom: 1px solid #ccc;
     margin-bottom: 40px;
     background-color: #fdfdfd;
@@ -136,6 +143,11 @@ body {
 #sidebar>ul>li>a{
   font-weight: bold;
 }
+#sidebar .search-matched {
+  font-weight: 100;
+  font-size: 10px;
+  color: #4caf50;
+}
 #sidebar-ctrl {
   cursor: pointer;
   position: fixed;
@@ -144,37 +156,18 @@ body {
   height: 50px;
   width: 18px;
   padding-top: 14px;
+  padding-left: 2px;
   background-color: rgba(221, 221, 221, 0.8);
-  border-radius: 0 5px 5px 0;
+  border-radius: 0 6px 6px 0;
   z-index: 10;
-  box-shadow: 1px 0 5px #ccc;
-  border: 1px solid #cdcdcd;
+  box-shadow: 1px 0 0 #ddd;
+  /*border: 1px solid #cdcdcd;*/
   -webkit-transition: left 250ms ease;
   -moz-transition: left 250ms ease;
   -o-transition: left 250ms ease;
   transition: left 250ms ease;
 }
-#content-toc-box {
-  position: fixed;
-  top: 150px;
-  right: 10px;
-  min-width: 120px;
-  max-width: 200px;
-  max-height: 400px;
-  overflow-y: auto;
-  background-color: #fff;
 
-  padding: 5px;
-  border: 1px solid #ddd;
-  box-shadow: 0 0 3px #dedede;
-}
-
-#content-toc-box .title{
-  font-weight: bold;
-}
-#content-toc {
-  padding: 6px;
-}
 #content-box {
   position: fixed;
   top: 70px;
@@ -198,6 +191,36 @@ body {
   width: 80%;
   max-width: 1200px;
   min-width: 350px; */
+}
+
+.content-bar {
+  padding: 8px 5px;
+  border-bottom: 1px solid #efefef;
+}
+.content-bar p {
+  margin: 0;
+}
+#content-toc-box {
+  position: fixed;
+  top: 150px;
+  right: 10px;
+  display: none;
+  min-width: 120px;
+  max-width: 200px;
+  max-height: 400px;
+  overflow-y: auto;
+  background-color: #fff;
+
+  padding: 5px;
+  border: 1px solid #ddd;
+  box-shadow: 0 0 3px #dedede;
+}
+
+#content-toc-box .title{
+  font-weight: bold;
+}
+#content-toc {
+  padding: 6px;
 }
 
 #content {
