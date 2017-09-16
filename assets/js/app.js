@@ -11,12 +11,6 @@ const storage = {
   gets: function (keys) {
     return keys.map(key => this.get(key))
   },
-  setJson: function (key, obj) {
-    localStorage.setItem(key, json_encode(obj))
-  },
-  getJson: function (key) {
-    return json_decode(this.get(key))
-  },
   del: function (key) {
     return localStorage.removeItem(key)
   },
