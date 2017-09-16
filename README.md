@@ -23,7 +23,7 @@
 
 - 示例配置请看文件 `assets/js/config.js`
 
-![][assets/images/20170916-115623.jpg]
+![alt text](assets/images/20170916-115623.jpg "example")
 
 ## 使用以及配置
 
