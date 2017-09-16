@@ -83,6 +83,7 @@ body {
 }
 
 #clear-search-input {
+  color: #999;
   pointer-events: initial;
 }
 
@@ -284,6 +285,22 @@ body {
   margin-right: 10px;
 }
 
+#back-to-top {
+  width: 20px;
+  height: 20px;
+  position: fixed;
+  bottom: 40px;
+  right: 15px;
+  text-decoration: none;
+  font-size: 20px;
+  opacity: .5;
+  line-height: 1;
+}
+
+#back-to-top:hover {
+  opacity: .9;
+}
+
 #loading-layer {
   z-index: 100;
   position: fixed;
@@ -314,10 +331,15 @@ body {
   }
 }
 
+.content-htag:hover .anchor-link {
+  opacity: 1 !important;
+}
+
 .anchor-link {
   line-height: 2rem;
   font-style: italic;
   opacity: 0;
+  transition: all 1.2s;
   -webkit-font-smoothing: antialiased;
   text-decoration: none;
 }

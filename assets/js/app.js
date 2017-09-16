@@ -34,6 +34,7 @@ const storage = {
 
 const CACHE_KEY_THEME = config.siteKey + '_theme'
 const CACHE_KEY_CATELOG = config.siteKey + '_catelog'
+const CACHE_KEY_WITH_SIDEBAR = config.siteKey + '_with_sidebar'
 // const CACHE_KEY_CODE_THEME = config.siteKey + '_code_theme'
 const CACHE_PREFIX_CONTENT = config.siteKey + ':'
 
@@ -76,6 +77,8 @@ function prepareInit() {
 
   if ($(window).width() < 769) {
     config.makeTOC = false
+    theBook.removeClass('with-sidebar')
+  } else if (storage.get(CACHE_KEY_WITH_SIDEBAR) == 0) {
     theBook.removeClass('with-sidebar')
   }
 
@@ -147,6 +150,7 @@ function init() {
 
   $('#sidebar-ctrl').on('click', function () {
     theBook.toggleClass('with-sidebar')
+    storage.set(CACHE_KEY_WITH_SIDEBAR, theBook.hasClass('with-sidebar') ? 1 : 0)
   })
 
   // content refresh
@@ -154,6 +158,11 @@ function init() {
     let pageUrl = $('#content').attr('data-url')
 
     showPageContent(pageUrl, null, true)
+  })
+
+  // back-to-top
+  $('#back-to-top ').on('click', function() {
+    $('#content-box').scrollTop(0)
   })
 }
 
@@ -345,7 +354,7 @@ function createContentTOC(contentBox) {
   }
 
   let haStyle = {
-    opacity: 1,
+    opacity: 0.65,
     position: 'absolute',
     marginLeft: '-1em',
     paddingRight: '0.5em',

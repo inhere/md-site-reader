@@ -1,5 +1,6 @@
 
 const config = {
+  // use for cache prefix
   siteKey: 'swoft',
   siteName: 'Swoft',
   siteDes: 'the description text',
@@ -26,14 +27,17 @@ const config = {
   catelogPage: 'SUMMARY.md',
   defaultPage: 'README.md',
 
+  // assets/lib/bootswatch/{theme:paper}/bootstrap.min.css
   theme: 'paper',
+  // assets/lib/highlight/styles/{codeTheme:github}.css
   codeTheme: 'github',
   makeTOC: true,
   /* £ $ & β ξ ψ ℘ § */
-  anchorIcon: '℘',
+  anchorIcon: '℘'
 }
 
 const themes = {
+  // theme name: nav height
   cerulean: 51,
   cyborg: 51,
   flatly: 61,
