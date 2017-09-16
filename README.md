@@ -19,9 +19,10 @@
 
 **示例文档** https://inhere.github.io/md-site-reader/
 
-示例渲染的是 astaxie 的 《Go web 编程》 https://github.com/astaxie/build-web-application-with-golang
+示例渲染的是 @astaxie 的 《Go web 编程》 https://github.com/astaxie/build-web-application-with-golang
 
 - 示例配置请看文件 `assets/js/config.js`
+- 效果预览：
 
 ![alt text](assets/images/20170916-115623.jpg "example")
 
