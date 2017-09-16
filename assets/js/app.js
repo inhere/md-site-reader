@@ -173,7 +173,7 @@ function showDocCatelog(refresh) {
     let html = md.render(res)
     let icon = ' <i class="fa fa-check search-matched hide"></i>'
 
-    sidebar.append(html).find('a').append(icon).on('click', catelogLinksHandler)
+    sidebar.find('div.catelog').html(html).find('a').append(icon).on('click', catelogLinksHandler)
   }
 
   let res = storage.get(CACHE_KEY_CATELOG)
