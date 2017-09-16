@@ -27,8 +27,6 @@
 }
 
 body {
-    position: relative;
-    /*padding-top: 70px;*/
 }
 
 .hide {
@@ -40,7 +38,9 @@ body {
 }
 
 .book {
-    width: 100%;
+  position: relative;
+  display: none;
+  width: 100%;
 }
 
 .book .navbar {
@@ -255,10 +255,25 @@ body {
   bottom: 0;
   background: rgba(0, 0, 0, 0.15);
   display: none;
+  font-size: 18px;
 }
 
 #loading-layer div.loading {
-  width: 50px;
+  width: 70px;
   height: 50px;
   margin: 35% auto 0;
+}
+
+@media (min-width: 992px) {
+
+  #loading-layer .loading {
+    margin-top: 30%;
+  }
+}
+
+@media (min-width: 1199px) {
+
+  #loading-layer .loading {
+    margin-top: 20%;
+  }
 }

@@ -13,7 +13,8 @@
   <script src="assets/lib/jquery-2.2.4.min.js"></script>
 </head>
 
-<body class="book with-sidebar">
+<body>
+  <div class="book with-sidebar">
     <nav id="top-menu" class="navbar navbar-default navbar-fixed-top">
       <div class="content-wrapper">
         <!-- Brand and toggle get grouped for better mobile display -->
@@ -24,7 +25,7 @@
            <span class="icon-bar"></span>
            <span class="icon-bar"></span>
          </button>
-         <a class="navbar-brand" id="top-logo" href="/">{render by config.siteName}</a>
+         <a class="navbar-brand" id="top-logo" href="">{render by config.siteName}</a>
        </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -83,6 +84,7 @@
           </div>
         </div>
       </div>
+      <!-- end.content-wrapper -->
 
       <div class="page-footer">
         <div class="content-wrapper">
@@ -113,14 +115,18 @@
           </div>
         </div>
       </div>
-    </div>
+      <!-- end.page-footer -->
 
-    <div id="loading-layer">
-      <div class="loading">
-        <i class="fa fa-spinner fa-spin fa-3x fa-fw text-primary"></i>
-        <span class="sr-only">Loading...</span>
-      </div>
     </div>
+    <!-- end#content-box -->
+  </div>
+  <!-- end.book -->
+  <div id="loading-layer">
+    <div class="loading text-primary">
+      <i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
+      <div>Loading</div>
+    </div>
+  </div>
 </body>
 
 <script defer src="assets/lib/bootstrap.min.js"></script>

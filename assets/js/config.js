@@ -2,6 +2,7 @@
 config.baseTitle = 'Go Web 编程'
 config.siteName = 'Go Web 编程'
 config.siteKey = 'go-web-dev'
+config.logoUrl = '/md-site-reader/'
 
 config.docProject = 'astaxie/build-web-application-with-golang'
 //   // e.g https://raw.githubusercontent.com/{astaxie/build-web-application-with-golang}/master/{beanfactory.md}

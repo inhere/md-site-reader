@@ -42,6 +42,7 @@ const CACHE_KEY_THEME = config.siteKey + '_theme'
 // const CACHE_KEY_CODE_THEME = config.siteKey + '_code_theme'
 const CACHE_PREFIX_CONTENT = config.siteKey + ':'
 
+const theBook = $('div.book')
 const loading = $('#loading-layer')
 const request = getUrlRequest()
 const titleEl = $('head>title')
@@ -68,12 +69,19 @@ $(function () { // init logic
   init()
   showDocCatelog()
   showPageContent(request.p ? request.p : config.defaultPage);
+
+  setTimeout(function () {
+    loading.hide()
+    theBook.fadeIn()
+  }, 500)
 })
 
 function prepareInit() {
+  loading.show()
+
   if ($(window).width() < 769) {
     config.makeTOC = false
-    $('body').removeClass('with-sidebar')
+    theBook.removeClass('with-sidebar')
   }
 
   let theme = storage.get(CACHE_KEY_THEME)
@@ -94,7 +102,7 @@ function prepareInit() {
   $('#code-style-link').attr('date-theme', config.codeTheme).attr('href', 'assets/lib/highlight/styles/' + config.codeTheme + '.css')
 
   // add some info to page
-  $('#top-logo').html(config.siteName)
+  $('#top-logo').attr('href', config.logoUrl).html(config.siteName)
   $('.project-url').attr('href', config.projectUrl)
   $('.doc-url').attr('href', config.docUrl)
   $('.issue-url').attr('href', config.issueUrl)
@@ -125,7 +133,7 @@ function init() {
   })
 
   $('#sidebar-ctrl').on('click', function () {
-    $('body').toggleClass('with-sidebar')
+    theBook.toggleClass('with-sidebar')
   })
 
   $('#refresh-btn').on('click', function() {
@@ -155,7 +163,7 @@ function showDocCatelog() {
 
     // let sidebar = $('#sidebar')
     let html = md.render(res)
-    let icon = '<i class="fa fa-check search-matched hide" style="font-weight: 200;"></i>'
+    let icon = ' <i class="fa fa-check search-matched hide"></i>'
 
     sidebar.html(html ? html : 'No catelog data')
     sidebar.find('a').append(icon).on('click', catelogLinksHandler)

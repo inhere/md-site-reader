@@ -5,6 +5,7 @@ const config = {
   // page title = baseTile + content title
   baseTitle: 'Swoft Doc',
   // basePath: ,
+  logoUrl: '/',
 
   docProject: 'swoft-cloud/swoft-doc',
   // e.g https://raw.githubusercontent.com/{swoft-cloud/swoft-doc}/master/{beanfactory.md}
