@@ -127,6 +127,25 @@ body {
     margin-bottom: 40px;
     background-color: #fdfdfd;
 }
+
+#sidebar-refresh-btn{
+  position: absolute;
+  right: 5px;
+  top: 0;
+  z-index: 2;
+  display: none;
+  width: 20px;
+  height: 20px;
+  color: #888;
+  padding: 3px;
+}
+#sidebar-refresh-btn:hover, #sidebar-refresh-btn:focus {
+  color: #2196f3;
+}
+#sidebar-box:hover #sidebar-refresh-btn{
+  display: block;
+}
+
 #sidebar>h1 {
     font-size: 24px;
     margin: 10px 0;
@@ -239,6 +258,12 @@ body {
 #content {
   min-height: 350px;
   padding-bottom: 15px;
+}
+
+#content .content-htag {
+  /*position: -webkit-sticky;
+  position: sticky;
+  top: 0;*/
 }
 
 .page-footer {

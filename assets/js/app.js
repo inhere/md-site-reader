@@ -33,6 +33,7 @@ const storage = {
 }
 
 const CACHE_KEY_THEME = config.siteKey + '_theme'
+const CACHE_KEY_CATELOG = config.siteKey + '_catelog'
 // const CACHE_KEY_CODE_THEME = config.siteKey + '_code_theme'
 const CACHE_PREFIX_CONTENT = config.siteKey + ':'
 
@@ -119,23 +120,15 @@ function init() {
       list += `<option value="${name}">${name}</option>`
     }
   })
-  $('#theme-list').html(list)
-
-  // bind some events
-  $('#theme-list').on('change', function () {
+  $('#theme-list').html(list).on('change', function () {
     let newTheme = $(this).val()
     storage.set(CACHE_KEY_THEME, newTheme)
     window.location.reload()
   })
 
-  $('#sidebar-ctrl').on('click', function () {
-    theBook.toggleClass('with-sidebar')
-  })
-
-  $('#refresh-btn').on('click', function() {
-    let pageUrl = $('#content').attr('data-url')
-
-    showPageContent(pageUrl, null, true)
+  // catelog refresh
+  $('#sidebar-refresh-btn').on('click', function() {
+    showDocCatelog(true)
   })
 
   $('#search-input').on('keyup', function(e) {
@@ -151,19 +144,46 @@ function init() {
       catelogSearch('')
     }
   })
+
+  $('#sidebar-ctrl').on('click', function () {
+    theBook.toggleClass('with-sidebar')
+  })
+
+  // content refresh
+  $('#refresh-btn').on('click', function() {
+    let pageUrl = $('#content').attr('data-url')
+
+    showPageContent(pageUrl, null, true)
+  })
 }
 
-function showDocCatelog() {
-  $.get(config.dataUrl + config.catelogPage, function (res) {
+function showDocCatelog(refresh) {
+  refresh = refresh === undefined ? false : refresh
+
+  let resHandler = function (res) {
     // console.log(res);
+    if (!res) {
+      sidebar.append('ERROR: No catelog data')
+      return
+    }
+
+    storage.set(CACHE_KEY_CATELOG, res)
 
     // let sidebar = $('#sidebar')
     let html = md.render(res)
     let icon = ' <i class="fa fa-check search-matched hide"></i>'
 
-    sidebar.html(html ? html : 'No catelog data')
-    sidebar.find('a').append(icon).on('click', catelogLinksHandler)
-  }, 'text');
+    sidebar.append(html).find('a').append(icon).on('click', catelogLinksHandler)
+  }
+
+  let res = storage.get(CACHE_KEY_CATELOG)
+
+  if (refresh || !res) {
+    $.get(config.dataUrl + config.catelogPage, resHandler, 'text');
+  } else {
+    resHandler(res)
+  }
+
 }
 
 function catelogLinksHandler(e) {
