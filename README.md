@@ -22,24 +22,28 @@
 示例渲染的是 @astaxie 的github项目 [《Go web 编程》](https://github.com/astaxie/build-web-application-with-golang)
 
 - 示例访问的就是当前仓库的 `index.html`
-- 示例配置请看文件 `assets/js/config.js`
+- 示例配置请看文件 `config.js`
 - 效果预览：
 
 ![alt text](assets/images/20170916-115623.jpg "example")
 
 ## 使用以及配置
 
-你可以通过 `assets/js/config.js` 来覆盖默认配置, 然后访问 `index.html` 即可
+你可以通过 `config.js` 来覆盖默认配置, 然后访问 `index.html` 即可
 
 ### 全部配置项
 
 ```js
-// file: assets/js/config.all.js
-const config = {
-  siteName: 'Swoft',
+// file: assets/js/config.defalut.js
+{
+  // use for cache prefix
   siteKey: 'swoft',
+  siteName: 'Swoft',
+  siteDes: 'the description text',
   // page title = baseTile + content title
   baseTitle: 'Swoft Doc',
+  // basePath: ,
+  logoUrl: '/',
 
   docProject: 'swoft-cloud/swoft-doc',
   // e.g https://raw.githubusercontent.com/{swoft-cloud/swoft-doc}/master/{beanfactory.md}
@@ -55,20 +59,21 @@ const config = {
   authorPage: 'https://github.com/stelin',
   authorName: 'stelin',
 
+  emptyData: 'No content to display!',
+  catelogPage: 'SUMMARY.md',
+  defaultPage: 'README.md',
+
   // assets/lib/bootswatch/{theme:paper}/bootstrap.min.css
   theme: 'paper',
   // assets/lib/highlight/styles/{codeTheme:github}.css
   codeTheme: 'github',
-  catelogPage: 'SUMMARY.md',
-  defaultPage: 'README.md',
   makeTOC: true,
-  emptyData: 'No content to display!',
   /* £ $ & β ξ ψ ℘ § */
-  anchorIcon: '℘'
+  anchorIcon: '℘',
+  tableClass: 'table table-bordered table-striped'
 }
 ```
 
 ## License
 
 MIT
-[/assets/images/20170916-115623.jpg]: 
