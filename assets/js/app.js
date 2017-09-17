@@ -61,19 +61,20 @@ window.onpopstate = function(event) {
     console.log("location: " + document.location + ", state: " + JSON.stringify(event.state));
 }
 
+/**
+ * begin logic
+ */
 $(function () { // init logic
   init()
   showDocCatelog()
-  showPageContent(request.p ? request.p : config.defaultPage);
-
-  setTimeout(function () {
-    loading.hide()
+  showPageContent(request.p ? request.p : config.defaultPage, null, false, function () {
+    // loading.hide()
     theBook.fadeIn()
-  }, 500)
+  })
 })
 
 function prepareInit() {
-  loading.show()
+  // loading.show()
 
   if ($(window).width() < 769) {
     config.makeTOC = false
@@ -85,12 +86,12 @@ function prepareInit() {
   let theme = storage.get(CACHE_KEY_THEME)
   theme = theme ? theme : config.theme
 
-  if (themes[theme]) {
-    config.navHeight = themes[theme]
+  if (config.themes[theme]) {
+    config.navHeight = config.themes[theme]
   } else {
     // reset to default
     theme = 'paper'
-    config.navHeight = themes.paper
+    config.navHeight = config.themes.paper
   }
 
   config.theme = theme
@@ -116,7 +117,7 @@ function init() {
 
   // render theme list
   let list = ''
-  Object.keys(themes).forEach(function (name) {
+  Object.keys(config.themes).forEach(function (name) {
     if (config.theme === name) {
       list += `<option value="${name}" selected>${name}</option>`
     } else {
@@ -192,7 +193,6 @@ function showDocCatelog(refresh) {
   } else {
     resHandler(res)
   }
-
 }
 
 function catelogLinksHandler(e) {
@@ -213,11 +213,19 @@ function catelogLinksHandler(e) {
   showPageContent(href, title)
 }
 
-function showPageContent(pageUrl, title, refresh) {
+/**
+ * show Page Content
+ * @param  {string}   pageUrl
+ * @param  {string}   title
+ * @param  {boolean}   refresh
+ * @param  {Function} callback
+ * @return {Void}
+ */
+function showPageContent(pageUrl, title, refresh, callback) {
   refresh = refresh === undefined ? false : refresh
   $('#edit-btn').attr('href', config.editUrl + '/' + pageUrl)
 
-  loading.toggle()
+  loading.show()
 
   let cacheKey = CACHE_PREFIX_CONTENT + pageUrl
   let successHandler = function (res) {
@@ -248,6 +256,12 @@ function showPageContent(pageUrl, title, refresh) {
       title = content.find('h1').first().text()
     }
 
+    let tableClass = config.tableClass
+
+    if (tableClass) {
+      content.find('table').addClass(tableClass)
+    }
+
     content.find('a').each(function() {
       let href = $(this).attr('href')
 
@@ -270,8 +284,11 @@ function showPageContent(pageUrl, title, refresh) {
     $('#doc-url').text(decodeURI(pageUrl))
     // show title
     titleEl.text(config.baseTitle + ' - ' + title)
+    loading.hide()
 
-    loading.toggle()
+    if (typeof callback === 'function') {
+      callback()
+    }
   }
 
   if (refresh || !storage.has(cacheKey)) {
@@ -281,13 +298,13 @@ function showPageContent(pageUrl, title, refresh) {
       dataType: 'text',
       success: successHandler,
       error: function(xhr){
+        loading.hide()
+
         if (xhr.status === 404) {
             $('#content').html('<h2 class="text-muted">' + config.emptyData + '</h2>')
         } else {
           alert("ERROR: (" + xhr.status + ") " + xhr.statusText);
         }
-
-        loading.toggle()
       }
     })
   } else {

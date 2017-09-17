@@ -33,10 +33,11 @@ const config = {
   codeTheme: 'github',
   makeTOC: true,
   /* £ $ & β ξ ψ ℘ § */
-  anchorIcon: '℘'
+  anchorIcon: '℘',
+  tableClass: 'table table-bordered table-striped'
 }
 
-const themes = {
+config.themes = {
   // theme name: nav height
   cerulean: 51,
   cyborg: 51,
