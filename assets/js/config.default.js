@@ -6,7 +6,7 @@ const config = {
   siteDes: 'the description text',
   // page title = baseTile + content title
   baseTitle: 'Swoft Doc',
-  // basePath: ,
+  assetBasePath: '',
   logoUrl: '/',
 
   docProject: 'swoft-cloud/swoft-doc',
@@ -34,7 +34,10 @@ const config = {
   makeTOC: true,
   /* £ $ & β ξ ψ ℘ § */
   anchorIcon: '℘',
-  tableClass: 'table table-bordered table-striped'
+  tableClass: 'table table-bordered table-striped',
+
+  // some events
+  onContentWrited: null
 }
 
 config.themes = {

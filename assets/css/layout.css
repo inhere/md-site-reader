@@ -148,10 +148,11 @@ body {
 }
 
 #sidebar h1 {
-    font-size: 24px;
-    margin: 10px 0;
+  font-size: 24px;
+  margin: 10px 0;
 }
 #sidebar ul{
+  color: #aaa;
   padding-left: 12px;
   margin-bottom: 0;
   list-style: none;

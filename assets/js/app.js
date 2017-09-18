@@ -97,8 +97,15 @@ function prepareInit() {
   config.theme = theme
 
   // load theme css
-  $('#bts-style-link').attr('date-theme', theme).attr('href', 'assets/lib/bootswatch/' + theme + '/bootstrap.min.css')
-  $('#code-style-link').attr('date-theme', config.codeTheme).attr('href', 'assets/lib/highlight/styles/' + config.codeTheme + '.css')
+  $('#bts-style-link').attr({
+    'date-theme': theme,
+    'href': config.assetBasePath + 'assets/lib/bootswatch/' + theme + '/bootstrap.min.css'
+  })
+
+  $('#code-style-link').attr({
+    'date-theme': config.codeTheme,
+    'href': config.assetBasePath + 'assets/lib/highlight/styles/' + config.codeTheme + '.css'
+  })
 
   // add some info to page
   $('#top-logo').attr('href', config.logoUrl).html(config.siteName)
@@ -188,7 +195,13 @@ function showDocCatelog(refresh) {
   let res = storage.get(CACHE_KEY_CATELOG)
 
   if (refresh || !res) {
-    $.get(config.dataUrl + config.catelogPage, resHandler, 'text');
+    let url = config.dataUrl + config.catelogPage
+
+    if (config.catelogPage[0] === '/' || config.catelogPage.search(/^http[s]/) > -1) {
+      url = config.catelogPage
+    }
+
+    $.get(url, resHandler, 'text');
   } else {
     resHandler(res)
   }
@@ -247,6 +260,10 @@ function showPageContent(pageUrl, title, refresh, callback) {
 
     content.attr('data-url', pageUrl).html(html)
 
+    if (typeof config.onContentWrited === 'function') {
+      config.onContentWrited(content)
+    }
+
     if (config.makeTOC) {
       createContentTOC(content)
     }
@@ -282,7 +299,7 @@ function showPageContent(pageUrl, title, refresh, callback) {
     $('#content-box').scrollTop(0)
     $('#doc-url').text(decodeURI(pageUrl))
     // show title
-    titleEl.text(config.baseTitle + ' - ' + title)
+    titleEl.text(title + ' - ' + config.baseTitle)
 
     if (typeof callback === 'function') {
       callback()
