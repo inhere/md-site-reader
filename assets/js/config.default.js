@@ -50,7 +50,7 @@ config.themes = {
   cosmo: 51,
   // darkly: 61,
   lumen: 51,
-  paper: 66,
+  paper: 65,
   sandstone: 63,
   slate: 52,
   superhero: 40,

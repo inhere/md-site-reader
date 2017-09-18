@@ -55,63 +55,63 @@ const md = window.markdownit({
     }
 })
 
-prepareInit()
-
-window.onpopstate = function(event) {
-    console.log("location: " + document.location + ", state: " + JSON.stringify(event.state));
+function MdSiteReader() {
+  this.book = $('div.book')
+  this.loading = $('#loading-layer')
 }
 
-/**
- * begin logic
- */
-$(function () { // init logic
-  init()
-  showDocCatelog()
-  showPageContent(request.p ? request.p : config.defaultPage, null, false, function () {
-    theBook.fadeIn()
-    loading.hide()
+MdSiteReader.prototype.run = function () {
+  const that = this
+
+  this.bindEvents()
+
+  this.createBookCatelog()
+
+  this.showPageContent(request.p ? request.p : config.defaultPage, null, false, function () {
+    that.book.fadeIn()
+    that.loading.hide()
   })
-})
-
-function prepareInit() {
-  // loading.show()
-
-  if ($(window).width() < 769) {
-    config.makeTOC = false
-    theBook.removeClass('with-sidebar')
-  } else if (storage.get(CACHE_KEY_WITH_SIDEBAR) == 0) {
-    theBook.removeClass('with-sidebar')
-  }
-
-  let theme = storage.get(CACHE_KEY_THEME)
-  theme = theme ? theme : config.theme
-
-  if (config.themes[theme]) {
-    config.navHeight = config.themes[theme]
-  } else {
-    // reset to default
-    theme = 'paper'
-    config.navHeight = config.themes.paper
-  }
-
-  config.theme = theme
-
-  // load theme css
-  $('#bts-style-link').attr('date-theme', theme).attr('href', 'assets/lib/bootswatch/' + theme + '/bootstrap.min.css')
-  $('#code-style-link').attr('date-theme', config.codeTheme).attr('href', 'assets/lib/highlight/styles/' + config.codeTheme + '.css')
-
-  // add some info to page
-  $('#top-logo').attr('href', config.logoUrl).html(config.siteName)
-  $('.site-des').text(config.siteDes)
-  $('.site-name').text(config.siteName)
-  $('.project-url').attr('href', config.projectUrl)
-  $('.doc-url').attr('href', config.docUrl)
-  $('.issue-url').attr('href', config.issueUrl)
-  $('.author-page').attr('href', config.authorPage)
-  $('.author-name').text(config.authorName)
 }
 
-function init() {
+MdSiteReader.prototype.prepareInit = function () {
+    // loading.show()
+
+    if ($(window).width() < 769) {
+      config.makeTOC = false
+      theBook.removeClass('with-sidebar')
+    } else if (storage.get(CACHE_KEY_WITH_SIDEBAR) == 0) {
+      theBook.removeClass('with-sidebar')
+    }
+
+    let theme = storage.get(CACHE_KEY_THEME)
+    theme = theme ? theme : config.theme
+
+    if (config.themes[theme]) {
+      config.navHeight = config.themes[theme]
+    } else {
+      // reset to default
+      theme = 'paper'
+      config.navHeight = config.themes.paper
+    }
+
+    config.theme = theme
+
+    // load theme css
+    $('#bts-style-link').attr('date-theme', theme).attr('href', 'assets/lib/bootswatch/' + theme + '/bootstrap.min.css')
+    $('#code-style-link').attr('date-theme', config.codeTheme).attr('href', 'assets/lib/highlight/styles/' + config.codeTheme + '.css')
+
+    // add some info to page
+    $('#top-logo').attr('href', config.logoUrl).html(config.siteName)
+    $('.site-des').text(config.siteDes)
+    $('.site-name').text(config.siteName)
+    $('.project-url').attr('href', config.projectUrl)
+    $('.doc-url').attr('href', config.docUrl)
+    $('.issue-url').attr('href', config.issueUrl)
+    $('.author-page').attr('href', config.authorPage)
+    $('.author-name').text(config.authorName)
+}
+
+MdSiteReader.bindEvents = function () {
   $('#sidebar-box').css({'top': config.navHeight + 'px'})
   $('#content-box').css({'top': config.navHeight + 'px'})
 
@@ -166,9 +166,7 @@ function init() {
   })
 }
 
-function showDocCatelog(refresh) {
-  refresh = refresh === undefined ? false : refresh
-
+MdSiteReader.createBookCatelog = function (refresh = false) {
   let resHandler = function (res) {
     // console.log(res);
     if (!res) {
@@ -194,7 +192,26 @@ function showDocCatelog(refresh) {
   }
 }
 
-function catelogLinksHandler(e) {
+MdSiteReader.showPageContent = function () {
+
+}
+
+const msr = new MdSiteReader()
+
+msr.prepareInit()
+
+// window.onpopstate = function(event) {
+//   console.log("location: " + document.location + ", state: " + JSON.stringify(event.state));
+// }
+
+/**
+ * begin logic
+ */
+$(function () {
+  msr.run()
+})
+
+function catelogLinkHandler(e) {
   e.preventDefault() // 默认事件
   e.stopPropagation() // 事件冒泡
   let href = $(this).attr('href')
