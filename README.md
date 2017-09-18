@@ -27,6 +27,12 @@
 
 ![alt text](assets/images/20170916-115623.jpg "example")
 
+## 更多books
+
+请看 https://git-books.github.io/
+
+收集了一些github上的书籍文档
+
 ## 使用以及配置
 
 你可以通过 `config.js` 来覆盖默认配置, 然后访问 `index.html` 即可
