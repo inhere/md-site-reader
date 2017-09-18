@@ -32,11 +32,9 @@ const storage = {
   }
 }
 
+const CACHE_KEY_LANG = config.siteKey + '_lang'
 const CACHE_KEY_THEME = config.siteKey + '_theme'
-const CACHE_KEY_CATELOG = config.siteKey + '_catelog'
 const CACHE_KEY_WITH_SIDEBAR = config.siteKey + '_with_sidebar'
-// const CACHE_KEY_CODE_THEME = config.siteKey + '_code_theme'
-const CACHE_PREFIX_CONTENT = config.siteKey + ':'
 
 const theBook = $('div.book')
 const loading = $('#loading-layer')
@@ -55,34 +53,34 @@ const md = window.markdownit({
     }
 })
 
-prepareInit()
+const MSR = {
+  cacheKeyCatelog: null,
+  cachePagePrefix: null,
+  run() {
+    this.prepareConfig()
+    this.prepareInit()
 
-window.onpopstate = function(event) {
-    console.log("location: " + document.location + ", state: " + JSON.stringify(event.state));
+    this.start()
+  },
+  start() {
+    const that = this
+
+    // begin logic
+    $(function () { // init logic
+      that.settingBookInfo()
+      that.bindEvents()
+
+      showDocCatelog()
+      showPageContent(request.p ? request.p : config.defaultPage, null, false, function () {
+        theBook.fadeIn()
+        loading.hide()
+      })
+    })
+  }
 }
 
-/**
- * begin logic
- */
-$(function () { // init logic
-  init()
-  showDocCatelog()
-  showPageContent(request.p ? request.p : config.defaultPage, null, false, function () {
-    theBook.fadeIn()
-    loading.hide()
-  })
-})
-
-function prepareInit() {
-  // loading.show()
-
-  if ($(window).width() < 769) {
-    config.makeTOC = false
-    theBook.removeClass('with-sidebar')
-  } else if (storage.get(CACHE_KEY_WITH_SIDEBAR) == 0) {
-    theBook.removeClass('with-sidebar')
-  }
-
+MSR.prepareConfig = function () {
+  // theme
   let theme = storage.get(CACHE_KEY_THEME)
   theme = theme ? theme : config.theme
 
@@ -96,18 +94,59 @@ function prepareInit() {
 
   config.theme = theme
 
+  // lang
+  let lang = storage.get(CACHE_KEY_LANG)
+
+  if (lang && config.langs.indexOf(lang) > -1) {
+    config.lang = lang
+  } else if (!config.lang && config.langs.length > 0) {
+    config.lang = config.langs[0]
+  }
+
+  if (config.lang) {
+    this.cacheKeyCatelog = config.siteKey + ':' + config.lang + '_catelog'
+    this.cachePagePrefix = config.siteKey + ':' + config.lang + '_page:'
+  } else {
+    this.cacheKeyCatelog = config.siteKey + '_catelog'
+    this.cachePagePrefix = config.siteKey + '_page:'
+  }
+
+  // other
+  config.withSidebar = storage.get(CACHE_KEY_WITH_SIDEBAR)
+
+  // project config
+  config.docUrl = config.docUrl.replace('{docProject}', config.docProject)
+  config.dataUrl = config.dataUrl.replace('{docProject}', config.docProject).replace('{lang}', config.lang)
+  config.editUrl = config.editUrl.replace('{docProject}', config.docProject).replace('{lang}', config.lang)
+
+  config.issueUrl = config.issueUrl.replace('{project}', config.project)
+  config.projectUrl = config.projectUrl.replace('{project}', config.project)
+}
+
+MSR.prepareInit = function () {
+  if ($(window).width() < 769) {
+    config.makeTOC = false
+    theBook.removeClass('with-sidebar')
+  } else if (config.withSidebar == 0) {
+    theBook.removeClass('with-sidebar')
+  }
+
   // load theme css
   $('#bts-style-link').attr({
-    'date-theme': theme,
-    'href': config.assetBasePath + 'assets/lib/bootswatch/' + theme + '/bootstrap.min.css'
+    'date-theme': config.theme,
+    'href': config.assetBasePath + 'assets/lib/bootswatch/' + config.theme + '/bootstrap.min.css'
   })
 
   $('#code-style-link').attr({
     'date-theme': config.codeTheme,
     'href': config.assetBasePath + 'assets/lib/highlight/styles/' + config.codeTheme + '.css'
   })
+}
 
-  // add some info to page
+MSR.settingBookInfo = function () {
+  // prepare some info to page
+  $('#sidebar-box').css({'top': config.navHeight + 'px'})
+  $('#content-box').css({'top': config.navHeight + 'px'})
   $('#top-logo').attr('href', config.logoUrl).html(config.siteName)
   $('.site-des').text(config.siteDes)
   $('.site-name').text(config.siteName)
@@ -118,10 +157,7 @@ function prepareInit() {
   $('.author-name').text(config.authorName)
 }
 
-function init() {
-  $('#sidebar-box').css({'top': config.navHeight + 'px'})
-  $('#content-box').css({'top': config.navHeight + 'px'})
-
+MSR.bindEvents = function () {
   // render theme list
   let list = ''
   Object.keys(config.themes).forEach(function (name) {
@@ -136,6 +172,27 @@ function init() {
     storage.set(CACHE_KEY_THEME, newTheme)
     window.location.reload()
   })
+
+  // render lang list
+  let langList = ''
+  config.langs.forEach(function (lang, idx) {
+
+    if (config.lang === lang) {
+      langList += `<option value="${lang}" selected>${lang}</option>`
+    } else {
+      langList += `<option value="${lang}">${lang}</option>`
+    }
+  })
+
+  if (langList) {
+    $('#lang-list').html(langList).on('change', function () {
+      let newLang = $(this).val()
+      storage.set(CACHE_KEY_LANG, newLang)
+      window.location.reload()
+    })
+  } else {
+    $('#lang-list').hide()
+  }
 
   // catelog refresh
   $('#sidebar-refresh-btn').on('click', function() {
@@ -183,7 +240,7 @@ function showDocCatelog(refresh) {
       return
     }
 
-    storage.set(CACHE_KEY_CATELOG, res)
+    storage.set(MSR.cacheKeyCatelog, res)
 
     // let sidebar = $('#sidebar')
     let html = md.render(res)
@@ -192,7 +249,7 @@ function showDocCatelog(refresh) {
     sidebar.find('div.catelog').html(html).find('a').append(icon).on('click', catelogLinksHandler)
   }
 
-  let res = storage.get(CACHE_KEY_CATELOG)
+  let res = storage.get(MSR.cacheKeyCatelog)
 
   if (refresh || !res) {
     let url = config.dataUrl + config.catelogPage
@@ -239,7 +296,7 @@ function showPageContent(pageUrl, title, refresh, callback) {
 
   loading.show()
 
-  let cacheKey = CACHE_PREFIX_CONTENT + pageUrl
+  let cacheKey = MSR.cachePagePrefix + pageUrl
   let successHandler = function (res) {
     // console.log(res);
     let content = $('#content')
@@ -300,6 +357,10 @@ function showPageContent(pageUrl, title, refresh, callback) {
     $('#doc-url').text(decodeURI(pageUrl))
     // show title
     titleEl.text(title + ' - ' + config.baseTitle)
+
+    if (typeof config.onContentHandled === 'function') {
+      config.onContentHandled(content, config)
+    }
 
     if (typeof callback === 'function') {
       callback()
@@ -433,3 +494,5 @@ function getUrlRequest(){
 
   return theRequest
 }
+
+MSR.run()

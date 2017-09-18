@@ -1,27 +1,31 @@
 
 const config = {
   // use for cache prefix
-  siteKey: 'swoft',
-  siteName: 'Swoft',
+  siteName: 'beego doc',
+  siteKey: 'beego-doc',
   siteDes: 'the description text',
   // page title = baseTile + content title
-  baseTitle: 'Swoft Doc',
+  baseTitle: 'beego-doc',
   assetBasePath: '',
   logoUrl: '/',
 
-  docProject: 'swoft-cloud/swoft-doc',
-  // e.g https://raw.githubusercontent.com/{swoft-cloud/swoft-doc}/master/{beanfactory.md}
-  dataUrl: 'https://raw.githubusercontent.com/swoft-cloud/swoft-doc/master/',
-  docUrl: 'https://github.com/swoft-cloud/swoft-doc',
-  // e.g https://github.com/swoft-cloud/swoft-doc/edit/master/http.md
-  editUrl: 'https://github.com/swoft-cloud/swoft-doc/edit/master',
+  lang: '', // zh-CN
+  langs: [], // ["en", "zh-CN"],
 
-  project: 'swoft-cloud/swoft',
-  projectUrl: 'https://github.com/swoft-cloud/swoft',
-  issueUrl: 'https://github.com/swoft-cloud/swoft/issues',
+  docProject: 'beego/beedoc',
+  docUrl: 'https://github.com/{docProject}',
+  // e.g https://raw.githubusercontent.com/{beego/beedoc}/master/{zh-CN}/{intro/README.md}
+  dataUrl: 'https://raw.githubusercontent.com/{docProject}/master/{lang}/',
+  // e.g https://github.com/{beego/beedoc}/edit/master/zh-CN/http.md
+  // e.g https://github.com/{beego/beedoc}/blob/master/zh-CN/http.md
+  editUrl: 'https://github.com/{docProject}/blob/master/{lang}',
 
-  authorPage: 'https://github.com/stelin',
-  authorName: 'stelin',
+  project: 'astaxie/beego',
+  projectUrl: 'https://github.com/{project}',
+  issueUrl: 'https://github.com/{project}/issues',
+
+  authorName: 'astaxie',
+  authorPage: 'https://github.com/astaxie',
 
   emptyData: 'No content to display!',
   catelogPage: 'SUMMARY.md',
@@ -37,7 +41,8 @@ const config = {
   tableClass: 'table table-bordered table-striped',
 
   // some events
-  onContentWrited: null
+  onContentWrited: null,
+  onContentHandled: null
 }
 
 config.themes = {
