@@ -260,6 +260,7 @@ body {
 #content {
   min-height: 350px;
   padding-bottom: 15px;
+  font-size: 16px;
 }
 
 #content .content-htag {
