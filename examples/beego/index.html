@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>{reander by config.baseTitle + content tile}</title>
-  <link async rel="stylesheet" href="../../assets/lib/font-awesome/css/font-awesome.min.css"/>
+  <link async  href="../../assets/lib/font-awesome/css/font-awesome.min.css" rel="stylesheet"/>
   <link id="bts-style-link" rel="stylesheet"/>
   <link id="code-style-link" rel="stylesheet"/>
-  <link href="../../assets/css/layout.css" rel="stylesheet"/>
+  <link href="../../assets/css/layout.css" rel="stylesheet">
   <script src="../../assets/js/config.default.js"></script>
   <script src="config.js"></script>
   <script src="../../assets/lib/jquery-2.2.4.min.js"></script>
@@ -16,7 +16,7 @@
 <body>
   <div class="book with-sidebar">
     <nav id="top-menu" class="navbar navbar-default navbar-fixed-top">
-      <div class="content-wrapper">
+      <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
        <div class="navbar-header">
          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
@@ -50,12 +50,17 @@
             <span id="clear-search-input" class="fa fa-remove form-control-feedback" aria-hidden="true"></span>
           </div>
         </div>
-
         <div id="sidebar">
           <span id="sidebar-refresh-btn" class="fa fa-refresh"></span>
           <div class="catelog">
             <!-- catelog list will render at there -->
           </div>
+        </div>
+        <div id="book-setting">
+          <label for="lang-list">Lang </label>
+          <select id="lang-list" style="min-width: 60px;"><option>no ...</option></select>
+          <label for="theme-list">Theme </label>
+          <select id="theme-list"></select>
         </div>
     </aside>
     <!-- #content-box -->
@@ -83,7 +88,7 @@
                 </div>
               </div>
               <div id="content-toc-box">
-                <div class="title"><i class="fa fa-list"></i> 内容结构</div>
+                <div class="title"><a id="content-toc-ctrl" href="javascript:void(0);"><i class="fa fa-list"></i></a> 内容结构</div>
                 <div id="content-toc"></div>
               </div>
 
@@ -99,33 +104,19 @@
             <div class="col-xs-12">
               <ul class="nav nav-pills">
                 <li>
-                  <a class="project-url" href="" target="_blank"><i class="fa fa-github" aria-hidden="true"></i> 项目地址(Github)</a>
+                  <a class="project-url" target="_blank"><i class="fa fa-github" aria-hidden="true"></i> 项目地址(Github)</a>
                 </li>
                 <li>
                 <a class="doc-url" target="_blank"><i class="fa fa-github" aria-hidden="true"></i> 文档地址(Github)</a>
                 </li>
               </ul>
-            </div>
-            <div class="col-xs-6">
-              <select id="theme-list" class="form-control">
-              </select>
-            </div>
-            <div class="col-xs-6">
-              <select id="lang-list" class="form-control">
-              </select>
-            </div>
-
-            <div class="col-xs-12">
               <div class="info-box">
                 <div class="info-item">
-                  Project author <a class="author-page" href="" target="_blank"><i class="fa fa-github" aria-hidden="true"></i> <span class="author-name"></span></a>
+                  Project by <a class="author-page" href="" target="_blank"><i class="fa fa-github" aria-hidden="true"></i> <span class="author-name"></span></a>
                 </div>
                 <div class="info-item">
-                  Document site powered by <a href="https://github.com/inhere/md-site-reader" target="_blank"><i class="fa fa-github" aria-hidden="true"></i> inhere/md-site-reader</a>
+                  Site powered by <a href="https://github.com/inhere/md-site-reader" target="_blank"><i class="fa fa-github" aria-hidden="true"></i> inhere/md-site-reader</a>
                 </div>
-                <!-- <div class="info-item">
-                  <i class="fa fa-qq" aria-hidden="true"></i> QQ群: 548173319
-                </div> -->
               </div>
             </div>
           </div>
@@ -133,7 +124,10 @@
       </div>
       <!-- end.page-footer -->
 
-      <a id="back-to-top" href="javascript:void(0);"><i class="fa fa-arrow-circle-up" aria-hidden="true"></i></a>
+      <div id="goto-btns">
+        <a class="goto-top" href="javascript:void(0);" title="goto top"><i class="fa fa-arrow-circle-up" aria-hidden="true"></i></a>
+        <a class="goto-bottom" href="javascript:void(0);" title="goto bottom"><i class="fa fa-arrow-circle-down" aria-hidden="true"></i></a>
+      </div>
     </div>
     <!-- end#content-box -->
   </div>

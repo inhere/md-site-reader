@@ -50,12 +50,17 @@
             <span id="clear-search-input" class="fa fa-remove form-control-feedback" aria-hidden="true"></span>
           </div>
         </div>
-
         <div id="sidebar">
           <span id="sidebar-refresh-btn" class="fa fa-refresh"></span>
           <div class="catelog">
             <!-- catelog list will render at there -->
           </div>
+        </div>
+        <div id="book-setting">
+          <label for="lang-list">Lang </label>
+          <select id="lang-list" style="min-width: 60px;"><option>no ...</option></select>
+          <label for="theme-list">Theme </label>
+          <select id="theme-list"></select>
         </div>
     </aside>
     <!-- #content-box -->
@@ -99,18 +104,10 @@
             <div class="col-xs-12">
               <ul class="nav nav-pills">
                 <li>
-                  <a class="project-url" href="" target="_blank"><i class="fa fa-github" aria-hidden="true"></i> 项目地址(Github)</a>
+                  <a class="project-url" target="_blank"><i class="fa fa-github" aria-hidden="true"></i> 项目地址(Github)</a>
                 </li>
                 <li>
                 <a class="doc-url" target="_blank"><i class="fa fa-github" aria-hidden="true"></i> 文档地址(Github)</a>
-                </li>
-                <li>
-                  <select id="theme-list" class="form-control pull-right">
-                  </select>
-                </li>
-                <li>
-                  <select id="lang-list" class="form-control pull-right">
-                  </select>
                 </li>
               </ul>
               <div class="info-box">
@@ -120,9 +117,6 @@
                 <div class="info-item">
                   Site powered by <a href="https://github.com/inhere/md-site-reader" target="_blank"><i class="fa fa-github" aria-hidden="true"></i> inhere/md-site-reader</a>
                 </div>
-                <!-- <div class="info-item">
-                  <i class="fa fa-qq" aria-hidden="true"></i> QQ群: 548173319
-                </div> -->
               </div>
             </div>
           </div>
@@ -130,7 +124,10 @@
       </div>
       <!-- end.page-footer -->
 
-      <a id="back-to-top" href="javascript:void(0);"><i class="fa fa-arrow-circle-up" aria-hidden="true"></i></a>
+      <div id="goto-btns">
+        <a class="goto-top" href="javascript:void(0);" title="goto top"><i class="fa fa-arrow-circle-up" aria-hidden="true"></i></a>
+        <a class="goto-bottom" href="javascript:void(0);" title="goto bottom"><i class="fa fa-arrow-circle-down" aria-hidden="true"></i></a>
+      </div>
     </div>
     <!-- end#content-box -->
   </div>

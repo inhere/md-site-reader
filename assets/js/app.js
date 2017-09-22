@@ -122,35 +122,35 @@ const MSR = {
     this.prepareConfig()
     this.prepareInit()
 
-    this.start()
-  },
-  start() {
     const that = this
 
     // begin logic
-    $(function () { // init logic
-      that.settingBookInfo()
-      that.bindEvents()
-
-      // load catelog
-      showDocCatelog()
-
-      // load fist page
-      let page = request.p ? request.p : config.defaultPage
-      loadPageContent(page, null, false, function () {
-        theBook.fadeIn()
-        loading.hide()
-        highlightCatelogLink(sidebar.find('a[data-id=' + genLinkId(page) + ']'))
-
-        let hash = window.location.hash.substr(1)
-        if (hash) {
-          document.getElementById(hash).scrollIntoView()
-        }
-      })
-
-      //
-      that.doSomething()
+    $(function () {
+      that.start()
     })
+  },
+  start() {
+    this.settingBookInfo()
+    this.bindEvents()
+
+    // load catelog
+    showDocCatelog()
+
+    // load fist page
+    let page = request.p ? request.p : config.defaultPage
+    loadPageContent(page, null, false, function () {
+      theBook.fadeIn()
+      loading.hide()
+      highlightCatelogLink(sidebar.find('a[data-id=' + genLinkId(page) + ']'))
+
+      let hash = window.location.hash.substr(1)
+      if (hash) {
+        document.getElementById(hash).scrollIntoView()
+      }
+    })
+
+    //
+    this.doSomething()
   }
 }
 
@@ -287,8 +287,8 @@ MSR.bindEvents = function () {
       storage.set(CACHE_KEY_LANG, newLang)
       window.location.reload()
     })
-  } else {
-    $('#lang-list').hide()
+  // } else {
+  //   $('#lang-list').hide()
   }
 
   // catelog refresh
@@ -322,12 +322,16 @@ MSR.bindEvents = function () {
   })
 
   $('#content-toc-ctrl').on('click', function() {
-    $('#content-toc').toggle()
+    $('#content-toc').slideToggle('slow')
   })
 
-  // back-to-top
-  $('#back-to-top ').on('click', function() {
-    $('#content-box').scrollTop(0)
+  // goto-top
+  $('#goto-btns .goto-top ').on('click', function() {
+    $('#content-box').animate({scrollTop:0}, 'slow')
+  })
+  // goto-bottom
+  $('#goto-btns .goto-bottom ').on('click', function() {
+    $('#content-box').animate({scrollTop: $('#content').height() }, 'slow')
   })
 }
 
