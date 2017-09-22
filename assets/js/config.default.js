@@ -19,6 +19,7 @@ const config = {
   // e.g https://github.com/{beego/beedoc}/edit/master/zh-CN/http.md
   // e.g https://github.com/{beego/beedoc}/blob/master/zh-CN/http.md
   editUrl: 'https://github.com/{docProject}/blob/master/{lang}',
+  docIssueUrl: 'https://github.com/{docProject}/issues',
 
   project: 'astaxie/beego',
   projectUrl: 'https://github.com/{project}',
@@ -41,6 +42,8 @@ const config = {
   tableClass: 'table table-bordered table-striped',
 
   // some events
+  onCatelogWrited: null,
+  onCatelogHandled: null,
   onContentWrited: null,
   onContentHandled: null
 }

@@ -1,3 +1,8 @@
+
+/***************************************************
+ * helper function
+ **************************************************/
+
 const storage = {
   set: function (key, value) {
     localStorage.setItem(key, value)
@@ -31,6 +36,63 @@ const storage = {
     }
   }
 }
+
+function getUrlRequest(){
+  let url = location.search //获取url中"?"符后的字串
+  let theRequest = new Object()
+
+  if (url.indexOf("?") != -1) {
+      var str = url.substr(1);
+      if (str.indexOf("&") != -1) {
+          strs = str.split("&");
+          for (var i = 0; i < strs.length; i++) {
+              theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+          }
+      } else {
+          var key = str.substring(0,str.indexOf("="));
+          var value = str.substr(str.indexOf("=")+1);
+          theRequest[key] = decodeURI(value);
+      }
+  }
+
+  return theRequest
+}
+
+function b64EncodeUnicode(str) {
+    return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
+        return String.fromCharCode('0x' + p1);
+    }));
+}
+
+function b64DecodeUnicode(str) {
+    return decodeURIComponent(atob(str).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+}
+
+function pushState (url, statObj, replace) {
+  const history = window.history
+  replace = replace || false
+  statObj = statObj || null
+
+  try {
+    if (replace) {
+      history.replaceState(statObj, '', url)
+    } else {
+      history.pushState(statObj, '', url)
+    }
+  } catch (e) {
+    window.location[replace ? 'replace' : 'assign'](url)
+  }
+}
+
+function replaceState (url, statObj) {
+  pushState(url, statObj, true)
+}
+
+/***************************************************
+ * begin logic
+ **************************************************/
 
 const CACHE_KEY_LANG = config.siteKey + '_lang'
 const CACHE_KEY_THEME = config.siteKey + '_theme'
@@ -70,10 +132,20 @@ const MSR = {
       that.settingBookInfo()
       that.bindEvents()
 
+      // load catelog
       showDocCatelog()
-      showPageContent(request.p ? request.p : config.defaultPage, null, false, function () {
+
+      // load fist page
+      let page = request.p ? request.p : config.defaultPage
+      loadPageContent(page, null, false, function () {
         theBook.fadeIn()
         loading.hide()
+        highlightCatelogLink(sidebar.find('a[data-id=' + genLinkId(page) + ']'))
+
+        let hash = window.location.hash.substr(1)
+        if (hash) {
+          document.getElementById(hash).scrollIntoView()
+        }
       })
     })
   }
@@ -118,6 +190,7 @@ MSR.prepareConfig = function () {
   config.docUrl = config.docUrl.replace('{docProject}', config.docProject)
   config.dataUrl = config.dataUrl.replace('{docProject}', config.docProject).replace('{lang}', config.lang)
   config.editUrl = config.editUrl.replace('{docProject}', config.docProject).replace('{lang}', config.lang)
+  config.docIssueUrl = config.docIssueUrl.replace('{docProject}', config.docProject)
 
   config.issueUrl = config.issueUrl.replace('{project}', config.project)
   config.projectUrl = config.projectUrl.replace('{project}', config.project)
@@ -158,6 +231,28 @@ MSR.settingBookInfo = function () {
 }
 
 MSR.bindEvents = function () {
+  // 在HTML5History中添加对修改浏览器地址栏URL的监听(前进和后退)
+  window.addEventListener('popstate', function (e) {
+    // console.log("location: ", window.location, "state: ",event.state);
+    let page = getUrlRequest().p
+
+    if (!page) {
+      return
+    }
+
+    // 前进或者后退 && 有 state 信息(点击锚点时没有它)
+    if (event.state) {
+      let title = event.state ? event.state.title : null
+      loadPageContent(page, title, false, function() {
+        highlightCatelogLink(sidebar.find('a[data-id=' + genLinkId(page) + ']'))
+        loading.hide()
+      })
+    } else if (location.hash) {
+      // console.log(location.hash)
+      document.getElementById(location.hash.substr(1)).scrollIntoView()
+    }
+  })
+
   // render theme list
   let list = ''
   Object.keys(config.themes).forEach(function (name) {
@@ -176,7 +271,6 @@ MSR.bindEvents = function () {
   // render lang list
   let langList = ''
   config.langs.forEach(function (lang, idx) {
-
     if (config.lang === lang) {
       langList += `<option value="${lang}" selected>${lang}</option>`
     } else {
@@ -221,7 +315,11 @@ MSR.bindEvents = function () {
   $('#refresh-btn').on('click', function() {
     let pageUrl = $('#content').attr('data-url')
 
-    showPageContent(pageUrl, null, true)
+    loadPageContent(pageUrl, null, true)
+  })
+
+  $('#content-toc-ctrl').on('click', function() {
+    $('#content-toc').toggle()
   })
 
   // back-to-top
@@ -231,25 +329,8 @@ MSR.bindEvents = function () {
 }
 
 function showDocCatelog(refresh) {
-  refresh = refresh === undefined ? false : refresh
-
-  let resHandler = function (res) {
-    // console.log(res);
-    if (!res) {
-      sidebar.append('ERROR: No catelog data')
-      return
-    }
-
-    storage.set(MSR.cacheKeyCatelog, res)
-
-    // let sidebar = $('#sidebar')
-    let html = md.render(res)
-    let icon = ' <i class="fa fa-check search-matched hide"></i>'
-
-    sidebar.find('div.catelog').html(html).find('a').append(icon).on('click', catelogLinksHandler)
-  }
-
   let res = storage.get(MSR.cacheKeyCatelog)
+  refresh = refresh === undefined ? false : refresh
 
   if (refresh || !res) {
     let url = config.dataUrl + config.catelogPage
@@ -260,8 +341,28 @@ function showDocCatelog(refresh) {
 
     $.get(url, resHandler, 'text');
   } else {
-    resHandler(res)
+    renderDocCatelog(res)
   }
+}
+
+function renderDocCatelog(res) {
+  // console.log(res);
+  if (!res) {
+    sidebar.append('ERROR: No catelog data')
+    return
+  }
+
+  storage.set(MSR.cacheKeyCatelog, res)
+
+  // let sidebar = $('#sidebar')
+  let html = md.render(res)
+  let icon = ' <i class="fa fa-check search-matched hide"></i>'
+
+  // sidebar.find('div.catelog').html(html).find('a').append(icon).on('click', catelogLinksHandler)
+  sidebar.find('div.catelog').html(html).find('a').each(function () {
+    let id = genLinkId($(this).attr('href'))
+    $(this).attr('data-id', id).append(icon).on('click', catelogLinksHandler)
+  })
 }
 
 function catelogLinksHandler(e) {
@@ -270,16 +371,22 @@ function catelogLinksHandler(e) {
   let href = $(this).attr('href')
   let title = $(this).text()
 
+  highlightCatelogLink($(this))
+
+  // 将地址栏URL加入历史 并 改变地址栏URL
+  pushState(location.pathname + '?p=' + href, {
+    title: title,
+    url: href
+  })
+  // 通过替换方式 改变地址栏URL
+  // replaceState(location.pathname + '?p=' + href, {title: title})
+
+  loadPageContent(href, title)
+}
+
+function highlightCatelogLink(link) {
   sidebar.find('a').removeClass('active')
-  $(this).addClass('active')
-
-  // 将地址栏URL加入历史
-  window.history.pushState({name: title}, "", location.pathname + '?p=' + request.p)
-  // 改变地址栏URL
-  // window.history.replaceState({name: title}, "", config.basePath + '?p=' + href)
-  window.history.replaceState({name: title}, "", location.pathname + '?p=' + href)
-
-  showPageContent(href, title)
+  link.addClass('active')
 }
 
 /**
@@ -287,94 +394,26 @@ function catelogLinksHandler(e) {
  * @param  {string}   pageUrl
  * @param  {string}   title
  * @param  {boolean}   refresh
- * @param  {Function} callback
+ * @param  {Function} onRendered
  * @return {Void}
  */
-function showPageContent(pageUrl, title, refresh, callback) {
+function loadPageContent(pageUrl, title, refresh, onRendered) {
   refresh = refresh === undefined ? false : refresh
   $('#edit-btn').attr('href', config.editUrl + '/' + pageUrl)
 
   loading.show()
 
   let cacheKey = MSR.cachePagePrefix + pageUrl
-  let successHandler = function (res) {
-    // console.log(res);
-    let content = $('#content')
-    let html = ''
+  let cacheData = storage.get(cacheKey)
 
-    if (res) {
-      // add cache
-      storage.set(cacheKey, res)
-      html = md.render(res)
-    } else {
-      html = '<h2 class="text-muted">' + config.emptyData + '</h2>'
-    }
-
-    // has image tag
-    if (html.indexOf('<img src="') > 0) {
-      html = html.replace(/<img [^>]*src=['"]([^'"]+)[^>]*>/gi, '<img class="img-responsive" src="' + config.dataUrl + '$1">')
-    }
-
-    content.attr('data-url', pageUrl).html(html)
-
-    if (typeof config.onContentWrited === 'function') {
-      config.onContentWrited(content)
-    }
-
-    if (config.makeTOC) {
-      createContentTOC(content)
-    }
-
-    if (!title) {
-      title = content.find('h1').first().text()
-    }
-
-    let tableClass = config.tableClass
-
-    if (tableClass) {
-      content.find('table').addClass(tableClass)
-    }
-
-    content.find('a').each(function() {
-      let href = $(this).attr('href')
-
-      // empyt OR is a anchor
-      if (!href || href[0] === '#') {
-        return
-      }
-
-      // outside link
-      if (href.search(/^http[s]/) > -1) {
-        $(this).attr('target', '_blank')
-
-        // inside link
-      } else {
-        $(this).on('click', catelogLinksHandler)
-      }
-    })
-
-    $('#content-box').scrollTop(0)
-    $('#doc-url').text(decodeURI(pageUrl))
-    // show title
-    titleEl.text(title + ' - ' + config.baseTitle)
-
-    if (typeof config.onContentHandled === 'function') {
-      config.onContentHandled(content, config)
-    }
-
-    if (typeof callback === 'function') {
-      callback()
-    } else {
-      loading.hide()
-    }
-  }
-
-  if (refresh || !storage.has(cacheKey)) {
+  if (refresh || !cacheData) {
     $.ajax({
       url: config.dataUrl + pageUrl,
       type: 'GET',
       dataType: 'text',
-      success: successHandler,
+      success: function (res) {
+        renderPageContent(res, pageUrl, title, cacheKey, onRendered)
+      },
       error: function(xhr){
         loading.hide()
 
@@ -386,8 +425,96 @@ function showPageContent(pageUrl, title, refresh, callback) {
       }
     })
   } else {
-    successHandler(storage.get(cacheKey))
+    renderPageContent(cacheData, pageUrl, title, cacheKey, onRendered)
   }
+}
+
+function renderPageContent(res, pageUrl, title, cacheKey, onRendered) {
+  // console.log(res);
+  let html = ''
+  let content = $('#content')
+
+  if (res) {
+    // add cache
+    storage.set(cacheKey, res)
+    html = md.render(res)
+  } else {
+    html = '<h2 class="text-muted">' + config.emptyData + '</h2>'
+  }
+
+  // has image tag
+  if (html.indexOf('<img src="') > 0) {
+    // html = html.replace(/<img [^>]*src=['"]([^'"]+)[^>]*>/gi, '<img class="img-responsive" src="' + config.dataUrl + '$1">')
+    html = html.replace(/<img [^>]*src=['"]([^'"]+)[^>]*>/gi, function(item, $1) {
+      // console.log( $1, $1.indexOf('../'), $1.replace('../', ''))
+      let newSrc = config.dataUrl + ($1.indexOf('../') === 0 ? $1.replace('../', '') : $1)
+      return '<img class="img-responsive" src="' + newSrc + '">'
+    })
+  }
+
+  content.attr('data-url', pageUrl).html(html)
+
+  if (typeof config.onContentWrited === 'function') {
+    config.onContentWrited(content)
+  }
+
+  // make toc
+  if (config.makeTOC) {
+    createContentTOC(content)
+  }
+
+  // get title
+  if (!title) {
+    title = content.find('h1').first().text()
+  }
+
+  let tableClass = config.tableClass
+  if (tableClass) {
+    content.find('table').addClass(tableClass)
+  }
+
+  content.find('a').each(function() {
+    let href = $(this).attr('href')
+
+    // empyt OR is a anchor
+    if (!href || href[0] === '#') {
+      return
+    }
+
+    // outside link
+    if (href.search(/^http[s]/) > -1) {
+      $(this).attr('target', '_blank')
+
+      // inside link
+    } else {
+      if (href.indexOf('../') === 0) {
+        $(this).attr('href', href.replace('../', ''))
+      }
+
+      $(this).on('click', catelogLinksHandler)
+    }
+  })
+
+  $('#content-box').scrollTop(0)
+  $('#doc-url').text(decodeURI(pageUrl))
+  // show title
+  titleEl.text(title + ' - ' + config.baseTitle)
+
+  if (typeof config.onContentHandled === 'function') {
+    config.onContentHandled(content, config)
+  }
+
+  if (typeof onRendered === 'function') {
+    onRendered(content)
+  } else {
+    loading.hide()
+  }
+}
+
+function genLinkId(str) {
+  encoded = b64EncodeUnicode(str)
+
+  return encoded.substr(0, encoded.length -2).toLowerCase()
 }
 
 function catelogSearch(kw) {
@@ -474,25 +601,5 @@ function createContentTOC(contentBox) {
   tocBox.show()
 }
 
-function getUrlRequest(){
-  let url = location.search //获取url中"?"符后的字串
-  let theRequest = new Object()
-
-  if (url.indexOf("?") != -1) {
-      var str = url.substr(1);
-      if (str.indexOf("&") != -1) {
-          strs = str.split("&");
-          for (var i = 0; i < strs.length; i++) {
-              theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
-          }
-      } else {
-          var key = str.substring(0,str.indexOf("="));
-          var value = str.substr(str.indexOf("=")+1);
-          theRequest[key] = decodeURI(value);
-      }
-  }
-
-  return theRequest
-}
 
 MSR.run()
