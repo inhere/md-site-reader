@@ -40,6 +40,8 @@ const config = {
   /* £ $ & β ξ ψ ℘ § */
   anchorIcon: '℘',
   tableClass: 'table table-bordered table-striped',
+  // topLinks: ['<a href="/"><i class="fa fa-undo" aria-hidden="true"></i> back books list</a>'],
+  topLinks: null,
 
   // some events
   onCatelogWrited: null,

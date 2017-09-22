@@ -53,6 +53,12 @@ body {
   color: #cdcdcd;
 }
 
+@media (max-width: 992px) {
+  .navbar p.site-des {
+    display: none;
+  }
+}
+
 #doc-url {
   /*font-size: 18px;*/
   /*color: #666;*/

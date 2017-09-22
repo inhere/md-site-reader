@@ -147,6 +147,9 @@ const MSR = {
           document.getElementById(hash).scrollIntoView()
         }
       })
+
+      //
+      that.doSomething()
     })
   }
 }
@@ -328,6 +331,18 @@ MSR.bindEvents = function () {
   })
 }
 
+MSR.doSomething = function () {
+  if (config.topLinks) {
+    let list = ''
+
+    config.topLinks.forEach(function(link, index) {
+      list += '<li>' + link + '</li>'
+    })
+
+    $('#top-menu .navbar-right').prepend(list)
+  }
+}
+
 function showDocCatelog(refresh) {
   let res = storage.get(MSR.cacheKeyCatelog)
   refresh = refresh === undefined ? false : refresh
@@ -339,7 +354,7 @@ function showDocCatelog(refresh) {
       url = config.catelogPage
     }
 
-    $.get(url, resHandler, 'text');
+    $.get(url, renderDocCatelog, 'text');
   } else {
     renderDocCatelog(res)
   }
@@ -446,8 +461,8 @@ function renderPageContent(res, pageUrl, title, cacheKey, onRendered) {
   if (html.indexOf('<img src="') > 0) {
     // html = html.replace(/<img [^>]*src=['"]([^'"]+)[^>]*>/gi, '<img class="img-responsive" src="' + config.dataUrl + '$1">')
     html = html.replace(/<img [^>]*src=['"]([^'"]+)[^>]*>/gi, function(item, $1) {
-      // console.log( $1, $1.indexOf('../'), $1.replace('../', ''))
-      let newSrc = config.dataUrl + ($1.indexOf('../') === 0 ? $1.replace('../', '') : $1)
+      // console.log( $1, $1.indexOf('../'))
+      let newSrc = config.dataUrl + ($1.indexOf('../') === 0 ? $1.replace(/\.\.\//g, '') : $1)
       return '<img class="img-responsive" src="' + newSrc + '">'
     })
   }
@@ -488,7 +503,7 @@ function renderPageContent(res, pageUrl, title, cacheKey, onRendered) {
       // inside link
     } else {
       if (href.indexOf('../') === 0) {
-        $(this).attr('href', href.replace('../', ''))
+        $(this).attr('href', href.replace(/\.\.\//g, ''))
       }
 
       $(this).on('click', catelogLinksHandler)
