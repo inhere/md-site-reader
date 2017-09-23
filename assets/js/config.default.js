@@ -7,7 +7,7 @@ const config = {
   // page title = baseTile + content title
   baseTitle: 'beego-doc',
   assetBasePath: '',
-  logoUrl: '/',
+  logoUrl: location.pathname,
 
   lang: '', // zh-CN
   langs: [], // ["en", "zh-CN"],

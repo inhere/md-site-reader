@@ -37,6 +37,10 @@ const storage = {
   }
 }
 
+function isRemoteUrl(url) {
+  return url.search(/^http[s]?/) > -1
+}
+
 function getUrlRequest(){
   let url = location.search //获取url中"?"符后的字串
   let theRequest = new Object()
@@ -357,7 +361,7 @@ function showDocCatelog(refresh) {
   if (refresh || !res) {
     let url = config.dataUrl + config.catelogPage
 
-    if (config.catelogPage[0] === '/' || config.catelogPage.search(/^http[s]/) > -1) {
+    if (config.catelogPage[0] === '/' || isRemoteUrl(config.catelogPage)) {
       url = config.catelogPage
     }
 
@@ -468,6 +472,10 @@ function renderPageContent(res, pageUrl, title, cacheKey, onRendered) {
   if (html.indexOf('<img src="') > 0) {
     // html = html.replace(/<img [^>]*src=['"]([^'"]+)[^>]*>/gi, '<img class="img-responsive" src="' + config.dataUrl + '$1">')
     html = html.replace(/<img [^>]*src=['"]([^'"]+)[^>]*>/gi, function(item, $1) {
+      if (isRemoteUrl($1)) {
+        return '<img class="img-responsive" src="' + $1 + '">'
+      }
+
       // console.log( $1, $1.indexOf('../'))
       let newSrc = config.dataUrl + ($1.indexOf('../') === 0 ? $1.replace(/\.\.\//g, '') : $1)
       return '<img class="img-responsive" src="' + newSrc + '">'
@@ -504,7 +512,7 @@ function renderPageContent(res, pageUrl, title, cacheKey, onRendered) {
     }
 
     // outside link
-    if (href.search(/^http[s]/) > -1) {
+    if (isRemoteUrl(href)) {
       $(this).attr('target', '_blank')
 
       // inside link
