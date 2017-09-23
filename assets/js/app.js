@@ -104,15 +104,18 @@ const request = getUrlRequest()
 const titleEl = $('head>title')
 const sidebar = $('#sidebar')
 const md = window.markdownit({
-    highlight: function (str, lang) {
-      if (lang && hljs.getLanguage(lang)) {
-        try {
-          return hljs.highlight(lang, str).value;
-        } catch (__) {}
-      }
-
-      return ''; // use external default escaping
+  html: true,
+  breaks: true,
+  linkify: true,
+  highlight: function (str, lang) {
+    if (lang && hljs.getLanguage(lang)) {
+      try {
+        return hljs.highlight(lang, str).value;
+      } catch (__) {}
     }
+
+    return ''; // use external default escaping
+  }
 })
 
 const MSR = {
@@ -144,8 +147,8 @@ const MSR = {
       highlightCatelogLink(sidebar.find('a[data-id=' + genLinkId(page) + ']'))
 
       let hash = window.location.hash.substr(1)
-      if (hash) {
-        document.getElementById(hash).scrollIntoView()
+      if (hTag = document.getElementById(hash)) {
+        hTag.scrollIntoView()
       }
     })
 

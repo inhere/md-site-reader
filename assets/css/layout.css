@@ -81,12 +81,16 @@ body {
 }
 
 #search-box {
-  height: 65px;
+  height: 55px;
   /* position: sticky; */
   /* top: 0; */
   /* background-color: rgba(245, 245, 245, 0.9); */
-  padding: 12px 10px 0;
+  padding: 10px 10px 0;
   border-bottom: 1px solid #bcbcbc;
+}
+
+#search-box .form-group{
+  margin-bottom: 0;
 }
 
 #clear-search-input {
@@ -131,7 +135,7 @@ body {
 
 #sidebar {
   position: absolute;
-  top: 65px;
+  top: 55px;
   bottom: 0;
   width: 100%;
   overflow-y: auto;
@@ -264,12 +268,12 @@ body {
 }
 #content-toc-box {
   position: fixed;
-  top: 150px;
+  top: 130px;
   right: 10px;
   display: none;
-  min-width: 120px;
-  max-width: 200px;
-  max-height: 400px;
+  min-width: 85px;
+  max-width: 210px;
+  max-height: 450px;
   overflow-y: auto;
 
   background-color: #f4f4f4;
