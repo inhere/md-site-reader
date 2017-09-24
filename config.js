@@ -6,7 +6,7 @@ config.siteKey = 'go-web-dev'
 config.logoUrl = location.pathname
 
 config.lang = 'zh'
-config.langs = ['bn', 'de', 'en', 'es', 'fr', 'ja', 'ru', 'tr', 'zh']
+config.langs = ['en', 'ja', 'pt-br', 'zh']
 
 config.docProject = 'astaxie/build-web-application-with-golang'
 config.project = 'astaxie/build-web-application-with-golang'
