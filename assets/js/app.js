@@ -198,8 +198,14 @@ MSR.prepareConfig = function () {
 
   // project config
   config.docUrl = config.docUrl.replace('{docProject}', config.docProject)
-  config.dataUrl = config.dataUrl.replace('{docProject}', config.docProject).replace('{lang}', config.lang)
-  config.editUrl = config.editUrl.replace('{docProject}', config.docProject).replace('{lang}', config.lang)
+  config.dataUrl = config.dataUrl
+    .replace('{docProject}', config.docProject)
+    .replace('{lang}', config.lang)
+    .replace('//', '/')
+  config.editUrl = config.editUrl
+    .replace('{docProject}', config.docProject)
+    .replace('{lang}', config.lang)
+    .replace('//', '/')
   config.docIssueUrl = config.docIssueUrl.replace('{docProject}', config.docProject)
 
   config.issueUrl = config.issueUrl.replace('{project}', config.project)
@@ -387,7 +393,7 @@ function renderDocCatelog(res) {
   // sidebar.find('div.catelog').html(html).find('a').append(icon).on('click', catelogLinksHandler)
   sidebar.find('div.catelog').html(html).find('a').each(function () {
     let id = genLinkId($(this).attr('href'))
-    $(this).attr('data-id', id).append(icon).on('click', catelogLinksHandler)
+    $(this).attr({'data-id': id, title: $(this).text()}).append(icon).on('click', catelogLinksHandler)
   })
 }
 
@@ -425,7 +431,7 @@ function highlightCatelogLink(link) {
  */
 function loadPageContent(pageUrl, title, refresh, onRendered) {
   refresh = refresh === undefined ? false : refresh
-  $('#edit-btn').attr('href', config.editUrl + '/' + pageUrl)
+  $('#edit-btn').attr('href', config.editUrl + pageUrl)
 
   loading.show()
 

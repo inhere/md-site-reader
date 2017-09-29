@@ -173,16 +173,23 @@ body {
   font-size: 24px;
   margin: 10px 0;
 }
+#sidebar h2 {
+  margin: 10px 0;
+  font-size: 18px;
+}
+#sidebar p {
+  margin: 0;
+}
 #sidebar ul{
   color: #aaa;
   padding-left: 12px;
   margin-bottom: 0;
   list-style: none;
+  font-weight: normal;
 }
 #sidebar a {
-  display: block;
-  padding-left: 10px;
-  color: #666;
+  color: #444;
+  font-weight: normal;
 }
 /*#sidebar a:visited {
   color: #aaa;
@@ -190,10 +197,11 @@ body {
 
 #sidebar a.active{
   border-left: 3px solid #2196F3;
-  background-color: #f5f5f5;
+  background-color: #e5e5e5;
   color: #2196F3;
+  padding: 0 10px;
 }
-#sidebar .catelog>ul>li>a{
+#sidebar .catelog>ul>li, #sidebar .catelog>ul>li>a{
   font-weight: bold;
 }
 #sidebar .search-matched {
