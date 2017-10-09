@@ -1,4 +1,4 @@
-
+// the all config
 const config = {
   // use for cache prefix
   siteName: 'beego doc',
@@ -8,6 +8,8 @@ const config = {
   baseTitle: 'beego-doc',
   assetBasePath: '',
   logoUrl: location.pathname,
+
+  docType: 'md', // 'rst'
 
   lang: '', // zh-CN
   langs: [], // ["en", "zh-CN"],

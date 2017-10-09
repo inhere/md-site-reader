@@ -198,14 +198,14 @@ MSR.prepareConfig = function () {
 
   // project config
   config.docUrl = config.docUrl.replace('{docProject}', config.docProject)
-  config.dataUrl = config.dataUrl
-    .replace('{docProject}', config.docProject)
-    .replace('{lang}', config.lang)
-    .replace('//', '/')
-  config.editUrl = config.editUrl
-    .replace('{docProject}', config.docProject)
-    .replace('{lang}', config.lang)
-    .replace('//', '/')
+  config.dataUrl = config.dataUrl.replace('{docProject}', config.docProject)
+  config.editUrl = config.editUrl.replace('{docProject}', config.docProject)
+
+  let char = config.lang ? '{lang}' : '{lang}/'
+
+  config.dataUrl = config.dataUrl.replace(char, config.lang)
+  config.editUrl = config.editUrl.replace(char, config.lang)
+
   config.docIssueUrl = config.docIssueUrl.replace('{docProject}', config.docProject)
 
   config.issueUrl = config.issueUrl.replace('{project}', config.project)
